@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import HttpError from "./middleware/errorHandler.js";
+import HttpError from "./middlewares/errorHandler.js";
 
 dotenv.config({ path: "./.dev.env" });
 
