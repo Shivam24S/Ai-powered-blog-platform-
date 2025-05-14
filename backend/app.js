@@ -1,8 +1,9 @@
 import dotenv from "dotenv";
-dotenv.config({ path: "./.dev.env" });
-
 import express from "express";
 import cors from "cors";
+import HttpError from "./middleware/errorHandler.js";
+
+dotenv.config({ path: "./.dev.env" });
 
 const app = express();
 
@@ -11,6 +12,24 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json("hello");
+});
+
+//undefined route handler
+
+app.use((req, res, next) => {
+  const error = new HttpError("requested route not found", 400);
+  next(error);
+});
+
+// centralized error handling
+
+app.use((error, req, res, next) => {
+  if (res.headerSent) {
+    return next(error);
+  }
+  res
+    .status(error.statusCode || 500)
+    .json({ message: error.message || "something went wrong" });
 });
 
 export default app;
