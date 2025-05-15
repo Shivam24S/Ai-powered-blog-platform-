@@ -82,4 +82,41 @@ const updateUser = async (req, res, next) => {
   }
 };
 
-export default { registerUser, GetAllUser, getUser, updateUser };
+const deleteUser = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const deleteUser = await User.findByIdAndDelete(id);
+
+    if (!deleteUser) {
+      return next(new HttpError("failed to delete user", 400));
+    }
+
+    res.status(200).json({ message: "user deleted successfully" });
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
+  }
+};
+
+const deleteAllUser = async (req, res, next) => {
+  try {
+    const deleteUsers = await User.deleteMany({});
+
+    if (!deleteAllUser) {
+      return next(new HttpError("failed to delete all Users", 500));
+    }
+
+    res.status(200).json({ message: "all user deleted successfully" });
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
+  }
+};
+
+export default {
+  registerUser,
+  GetAllUser,
+  getUser,
+  updateUser,
+  deleteUser,
+  deleteAllUser,
+};

@@ -11,4 +11,8 @@ router.get("/getUserById/:id", userController.getUser);
 
 router.patch("/updateUser/:id", userController.updateUser);
 
+router.delete("/deleteUser/:id", userController.deleteUser);
+
+router.delete("/deleteAllUser", userController.deleteAllUser);
+
 export default router;
