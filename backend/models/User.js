@@ -1,5 +1,6 @@
 import mongoose, { version } from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -38,6 +39,13 @@ const UserSchema = new mongoose.Schema({
       ref: "Blog",
     },
   ],
+  tokens: [
+    {
+      token: {
+        type: String,
+      },
+    },
+  ],
 });
 
 // hashing password
@@ -65,6 +73,20 @@ UserSchema.set("toJSON", {
     delete ret._id, delete ret.password;
   },
 });
+
+// generating jwt token
+
+UserSchema.methods.generateAuthToken = async function () {
+  const user = this;
+
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY);
+
+  user.tokens = user.tokens.concat({ token });
+
+  await user.save();
+
+  return token;
+};
 
 const User = mongoose.model("User", UserSchema);
 

@@ -14,7 +14,10 @@ const registerUser = async (req, res, next) => {
     const userData = new User({ name, email, password, profilePic });
 
     await userData.save();
-    res.status(201).json({ message: "user created successfully", userData });
+    const token = await userData.generateAuthToken();
+    res
+      .status(201)
+      .json({ message: "user created successfully", userData, token });
   } catch (error) {
     return next(new HttpError(error.message, 500));
   }
