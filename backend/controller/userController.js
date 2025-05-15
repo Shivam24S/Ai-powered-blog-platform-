@@ -1,6 +1,5 @@
 import User from "../models/User.js";
 import HttpError from "../middlewares/errorHandler.js";
-import { json } from "express";
 
 const registerUser = async (req, res, next) => {
   try {
@@ -17,7 +16,7 @@ const registerUser = async (req, res, next) => {
     await userData.save();
     res.status(201).json({ message: "user created successfully", userData });
   } catch (error) {
-    return next(new HttpError(error.message, 400));
+    return next(new HttpError(error.message, 500));
   }
 };
 
@@ -30,7 +29,7 @@ const GetAllUser = async (req, res, next) => {
     }
     return res.status(200).json({ allUsers: users });
   } catch (error) {
-    return next(new HttpError(error.message, 400));
+    return next(new HttpError(error.message, 500));
   }
 };
 
@@ -45,8 +44,42 @@ const getUser = async (req, res, next) => {
     }
     return res.status(200).json({ user });
   } catch (error) {
-    return next(new HttpError(error.message, 400));
+    return next(new HttpError(error.message, 500));
   }
 };
 
-export default { registerUser, GetAllUser, getUser };
+const updateUser = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return next(new HttpError("user not found", 404));
+    }
+
+    const updates = Object.keys(req.body);
+
+    const allowedUpdate = ["name", "email", "password", "profilePic"];
+
+    const isValidUpdate = updates.every((update) =>
+      allowedUpdate.includes(update)
+    );
+
+    if (!isValidUpdate) {
+      return next(new HttpError("only allowed field can be edit", 400));
+    }
+
+    updates.forEach((update) => {
+      user[update] = req.body[update];
+    });
+
+    await user.save();
+
+    res.status(200).json({ message: "user data updated successfully", user });
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
+  }
+};
+
+export default { registerUser, GetAllUser, getUser, updateUser };
