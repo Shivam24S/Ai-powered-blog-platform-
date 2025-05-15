@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import mongoose, { version } from "mongoose";
+import bcrypt from "bcrypt";
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -37,6 +38,32 @@ const UserSchema = new mongoose.Schema({
       ref: "Blog",
     },
   ],
+});
+
+// hashing password
+
+UserSchema.pre("save", async function (next) {
+  const user = this;
+
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
+
+  next();
+});
+
+// attaching virtual property to userSchema _id to id
+UserSchema.virtual("id", () => {
+  return this._id.toHexString();
+});
+
+// deleting _id and password from the response
+UserSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id, delete ret.password;
+  },
 });
 
 const User = mongoose.model("User", UserSchema);

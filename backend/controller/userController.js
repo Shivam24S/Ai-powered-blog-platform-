@@ -3,10 +3,12 @@ import HttpError from "../middlewares/errorHandler.js";
 
 const registerUser = async (req, res, next) => {
   try {
-    const user = await User.findOne(req.email);
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
 
     if (user) {
-      return next(HttpError("userAlready exist", 500));
+      return next(new HttpError("userAlready exist", 409));
     }
 
     const userData = new User(req.body);
@@ -14,7 +16,7 @@ const registerUser = async (req, res, next) => {
     await userData.save();
     res.status(201).json({ message: "user created successfully", userData });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    return next(new HttpError(error.message, 400));
   }
 };
 
