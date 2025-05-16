@@ -7,6 +7,7 @@ import {
   userValidationSchema,
   userOptionalValidation,
 } from "../validation/userValidation.js";
+import auth from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -16,19 +17,20 @@ router.post(
   userController.registerUser
 );
 
-router.get("/users", userController.users);
+router.get("/users", auth, userController.users);
 
-router.get("/:id", userController.user);
+router.get("/me", auth, userController.user);
 
 router.patch(
-  "/:id",
+  "/",
+  auth,
   validateSchema(userOptionalValidation),
   userController.updateUser
 );
 
-router.delete("/:id", userController.deleteUser);
+router.delete("/", auth, userController.deleteUser);
 
-router.delete("/users", userController.deleteAllUser);
+router.delete("/users", auth, userController.deleteAllUser);
 
 router.post(
   "/login",

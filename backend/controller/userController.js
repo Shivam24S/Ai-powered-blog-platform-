@@ -17,7 +17,7 @@ const registerUser = async (req, res, next) => {
     const token = await userData.generateAuthToken();
     res
       .status(201)
-      .json({ message: "user created successfully", userData, token });
+      .json({ message: "user created successfully", user: userData, token });
   } catch (error) {
     return next(new HttpError(error.message, 500));
   }
@@ -38,9 +38,9 @@ const users = async (req, res, next) => {
 
 const user = async (req, res, next) => {
   try {
-    const id = req.params.id;
+    const requestedUser = req.user;
 
-    const user = await User.findById(id);
+    const user = await User.findById(requestedUser._id);
 
     if (!user) {
       return next(new HttpError("user not found", 404));
@@ -53,9 +53,9 @@ const user = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const id = req.params.id;
+    const requestedUser = req.user;
 
-    const user = await User.findById(id);
+    const user = await User.findById(requestedUser._id);
 
     if (!user) {
       return next(new HttpError("user not found", 404));
@@ -87,9 +87,9 @@ const updateUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const id = req.params.id;
+    const requestedUser = req.user;
 
-    const deleteUser = await User.findByIdAndDelete(id);
+    const deleteUser = await User.findByIdAndDelete(requestedUser._id);
 
     if (!deleteUser) {
       return next(new HttpError("failed to delete user", 400));
@@ -105,7 +105,7 @@ const deleteAllUser = async (req, res, next) => {
   try {
     const deleteUsers = await User.deleteMany({});
 
-    if (!deleteUsers || deleteUsers.count === 0) {
+    if (!deleteUsers || deleteUsers.deletedCount === 0) {
       return next(new HttpError("failed to delete all Users", 500));
     }
 
