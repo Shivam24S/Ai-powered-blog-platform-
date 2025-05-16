@@ -115,6 +115,23 @@ const deleteAllUser = async (req, res, next) => {
   }
 };
 
+// login user
+
+const userLogIn = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findByCredential(email, password);
+
+    if (!user) {
+      return next(new HttpError("unauthorized access", 401));
+    }
+    res.status(200).json({ message: "user log in successfully", user });
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
+  }
+};
+
 export default {
   registerUser,
   GetAllUser,
@@ -122,4 +139,5 @@ export default {
   updateUser,
   deleteUser,
   deleteAllUser,
+  userLogIn,
 };

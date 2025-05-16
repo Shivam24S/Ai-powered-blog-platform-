@@ -1,8 +1,9 @@
-import mongoose, { version } from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import HttpError from "../middlewares/errorHandler.js";
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -50,7 +51,7 @@ const UserSchema = new mongoose.Schema({
 
 // hashing password
 
-UserSchema.pre("save", async function (next) {
+userSchema.pre("save", async function (next) {
   const user = this;
 
   if (user.isModified("password")) {
@@ -61,12 +62,12 @@ UserSchema.pre("save", async function (next) {
 });
 
 // attaching virtual property to userSchema _id to id
-UserSchema.virtual("id", () => {
+userSchema.virtual("id", () => {
   return this._id.toHexString();
 });
 
 // deleting _id and password from the response
-UserSchema.set("toJSON", {
+userSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
   transform: function (doc, ret) {
@@ -76,7 +77,7 @@ UserSchema.set("toJSON", {
 
 // generating jwt token
 
-UserSchema.methods.generateAuthToken = async function () {
+userSchema.methods.generateAuthToken = async function () {
   const user = this;
 
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY);
@@ -88,6 +89,21 @@ UserSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-const User = mongoose.model("User", UserSchema);
+userSchema.statics.findByCredential = async function (email, password) {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new HttpError("invalid credential", 401);
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    throw new HttpError("invalid credential", 401);
+  }
+  return user;
+};
+
+const User = mongoose.model("User", userSchema);
 
 export default User;

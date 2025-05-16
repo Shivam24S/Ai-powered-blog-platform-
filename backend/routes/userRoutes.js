@@ -15,4 +15,6 @@ router.delete("/deleteUser/:id", userController.deleteUser);
 
 router.delete("/deleteAllUser", userController.deleteAllUser);
 
+router.post("/userLogin", userController.userLogIn);
+
 export default router;
