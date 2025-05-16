@@ -1,20 +1,44 @@
 import express from "express";
+import joi from "joi";
+
 import userController from "../controller/userController.js";
+import validateSchema from "../middlewares/validateSchema.js";
+import {
+  userValidationSchema,
+  userOptionalValidation,
+} from "../validation/userValidation.js";
 
 const router = express.Router();
 
-router.post("/registerUser", userController.registerUser);
+router.post(
+  "/registerUser",
+  validateSchema(userValidationSchema),
+  userController.registerUser
+);
 
-router.get("/allUser", userController.GetAllUser);
+router.get("/users", userController.users);
 
-router.get("/getUserById/:id", userController.getUser);
+router.get("/:id", userController.user);
 
-router.patch("/updateUser/:id", userController.updateUser);
+router.patch(
+  "/:id",
+  validateSchema(userOptionalValidation),
+  userController.updateUser
+);
 
-router.delete("/deleteUser/:id", userController.deleteUser);
+router.delete("/:id", userController.deleteUser);
 
-router.delete("/deleteAllUser", userController.deleteAllUser);
+router.delete("/users", userController.deleteAllUser);
 
-router.post("/userLogin", userController.userLogIn);
+router.post(
+  "/login",
+  validateSchema(
+    joi.object({
+      email: joi.string().email().required(),
+      password: joi.string().required(),
+    })
+  ),
+  userController.login
+);
 
 export default router;

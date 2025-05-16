@@ -72,6 +72,9 @@ userSchema.set("toJSON", {
   versionKey: false,
   transform: function (doc, ret) {
     delete ret._id, delete ret.password;
+    delete ret.tokens;
+
+    return ret;
   },
 });
 
@@ -80,7 +83,9 @@ userSchema.set("toJSON", {
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
 
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY);
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "7d",
+  });
 
   user.tokens = user.tokens.concat({ token });
 

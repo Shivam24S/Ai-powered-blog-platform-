@@ -23,7 +23,7 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-const GetAllUser = async (req, res, next) => {
+const users = async (req, res, next) => {
   try {
     const users = await User.find({});
 
@@ -36,7 +36,7 @@ const GetAllUser = async (req, res, next) => {
   }
 };
 
-const getUser = async (req, res, next) => {
+const user = async (req, res, next) => {
   try {
     const id = req.params.id;
 
@@ -105,7 +105,7 @@ const deleteAllUser = async (req, res, next) => {
   try {
     const deleteUsers = await User.deleteMany({});
 
-    if (!deleteAllUser) {
+    if (!deleteUsers || deleteUsers.count === 0) {
       return next(new HttpError("failed to delete all Users", 500));
     }
 
@@ -117,7 +117,7 @@ const deleteAllUser = async (req, res, next) => {
 
 // login user
 
-const userLogIn = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -126,7 +126,10 @@ const userLogIn = async (req, res) => {
     if (!user) {
       return next(new HttpError("unauthorized access", 401));
     }
-    res.status(200).json({ message: "user log in successfully", user });
+
+    const token = await user.generateAuthToken();
+
+    res.status(200).json({ message: "user log in successfully", user, token });
   } catch (error) {
     return next(new HttpError(error.message, 500));
   }
@@ -134,10 +137,10 @@ const userLogIn = async (req, res) => {
 
 export default {
   registerUser,
-  GetAllUser,
-  getUser,
+  users,
+  user,
   updateUser,
   deleteUser,
   deleteAllUser,
-  userLogIn,
+  login,
 };
