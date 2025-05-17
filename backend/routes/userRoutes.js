@@ -8,12 +8,14 @@ import {
   userOptionalValidation,
 } from "../validation/userValidation.js";
 import auth from "../middlewares/auth.js";
+import authLimiter from "../middlewares/authLimiter.js";
 
 const router = express.Router();
 
 router.post(
   "/registerUser",
   validateSchema(userValidationSchema),
+
   userController.registerUser
 );
 
@@ -25,6 +27,7 @@ router.patch(
   "/",
   auth,
   validateSchema(userOptionalValidation),
+  authLimiter,
   userController.updateUser
 );
 
@@ -40,6 +43,7 @@ router.post(
       password: joi.string().required(),
     })
   ),
+  authLimiter,
   userController.login
 );
 
