@@ -1,8 +1,19 @@
 import express from "express";
+
+import auth from "../middlewares/auth.js";
 import blogController from "../controller/blogController.js";
+import validateSchema from "../middlewares/validateSchema.js";
+import blogValidation from "../validation/blogValidation.js";
 
-const routes = express.Router();
+const router = express.Router();
 
-routes.post("/addBlog", blogController.addBlog);
+router.post(
+  "/addBlog",
+  auth,
+  validateSchema(blogValidation),
+  blogController.addBlog
+);
 
-export default routes;
+router.get("/blogs", blogController.blogs);
+
+export default router;
