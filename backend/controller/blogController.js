@@ -56,4 +56,46 @@ const blogs = async (req, res, next) => {
   }
 };
 
-export default { addBlog, blogs };
+const updateBlog = async (req, res, next) => {
+  try {
+    const requestedUser = req.user;
+
+    const id = req.params.id;
+
+    const blog = await Blog.findById(id);
+
+    if (!blog) {
+      return next(new HttpError("blog not found", 404));
+    }
+
+    if (blog.user.toString() !== requestedUser._id.toString()) {
+      return next(
+        new HttpError("you are not authorized to edit this blog", 400)
+      );
+    }
+
+    const updates = Object.keys(req.body);
+
+    const allowedUpdates = ["title", "description"];
+
+    const isValidUpdates = updates.every((update) =>
+      allowedUpdates.includes(update)
+    );
+
+    if (!isValidUpdates) {
+      return next(new HttpError("only allowed field can be updates", 400));
+    }
+
+    updates.forEach((update) => {
+      blog[update] = req.body[update];
+    });
+
+    await blog.save();
+
+    res.status(200).json({ message: "blog updated successfully", blog });
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
+  }
+};
+
+export default { addBlog, blogs, updateBlog };

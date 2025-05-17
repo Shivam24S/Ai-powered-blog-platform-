@@ -14,4 +14,9 @@ const blogValidation = joi.object({
   }),
 });
 
-export default blogValidation;
+const updateBlogValidation = blogValidation.fork(
+  ["title", "description"],
+  (schema) => schema.optional()
+);
+
+export { blogValidation, updateBlogValidation };

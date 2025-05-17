@@ -3,7 +3,10 @@ import express from "express";
 import auth from "../middlewares/auth.js";
 import blogController from "../controller/blogController.js";
 import validateSchema from "../middlewares/validateSchema.js";
-import blogValidation from "../validation/blogValidation.js";
+import {
+  blogValidation,
+  updateBlogValidation,
+} from "../validation/blogValidation.js";
 
 const router = express.Router();
 
@@ -15,5 +18,12 @@ router.post(
 );
 
 router.get("/blogs", blogController.blogs);
+
+router.patch(
+  "/:id",
+  auth,
+  validateSchema(updateBlogValidation),
+  blogController.updateBlog
+);
 
 export default router;
