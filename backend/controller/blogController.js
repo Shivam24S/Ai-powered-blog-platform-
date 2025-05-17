@@ -98,4 +98,48 @@ const updateBlog = async (req, res, next) => {
   }
 };
 
-export default { addBlog, blogs, updateBlog };
+const getBlog = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const blog = await Blog.findById(id);
+
+    if (!blog) {
+      return next(new HttpError("blog not found", 404));
+    }
+
+    res.status(200).json(blog);
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
+  }
+};
+
+const deleteBlog = async (req, res, next) => {
+  const id = req.params.id;
+
+  let blog = null;
+  try {
+    blog = await Blog.findById(id).populate("user");
+
+    if (!blog) {
+      return next(new HttpError("blog not found", 404));
+    }
+
+    if (blog.user._id.toString() !== req.user._id.toString()) {
+      return next(
+        new HttpError("you are not allowed to delete this blog", 400)
+      );
+    }
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
+  }
+
+  mongoose.connection.transaction(async (session) => {
+    await blog.deleteOne({ session });
+    blog.user.Blogs.pull(blog);
+    await blog.user.save({ session });
+  });
+  res.status(200).json({ message: "blog deleted successfully" });
+};
+
+export default { addBlog, blogs, updateBlog, deleteBlog, getBlog };

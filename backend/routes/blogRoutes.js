@@ -26,4 +26,8 @@ router.patch(
   blogController.updateBlog
 );
 
+router.delete("/:id", auth, blogController.deleteBlog);
+
+router.get("/:id", blogController.getBlog);
+
 export default router;
