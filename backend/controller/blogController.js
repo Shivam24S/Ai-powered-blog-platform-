@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Blog from "../models/Blog.js";
 import HttpError from "../middlewares/errorHandler.js";
 import User from "../models/User.js";
+import summarizeContent from "../utils/summarizeContent.js";
 
 const addBlog = async (req, res, next) => {
   try {
@@ -142,4 +143,29 @@ const deleteBlog = async (req, res, next) => {
   res.status(200).json({ message: "blog deleted successfully" });
 };
 
-export default { addBlog, blogs, updateBlog, deleteBlog, getBlog };
+const summarizeBlog = async (req, res, next) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) return next(new HttpError("Blog not found", 404));
+
+    const summary = await summarizeContent(blog.description);
+
+    if (!summary) {
+      return next(new HttpError("failed to generate summary", 500));
+    }
+    return res
+      .status(201)
+      .json({ message: "summary generated successfully", summary });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
+export default {
+  addBlog,
+  blogs,
+  updateBlog,
+  deleteBlog,
+  getBlog,
+  summarizeBlog,
+};

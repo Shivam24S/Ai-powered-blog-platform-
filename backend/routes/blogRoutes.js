@@ -30,4 +30,6 @@ router.delete("/:id", auth, blogController.deleteBlog);
 
 router.get("/:id", blogController.getBlog);
 
+router.post("/:id", auth, blogController.summarizeBlog);
+
 export default router;
