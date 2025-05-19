@@ -149,6 +149,18 @@ const logout = async (req, res, next) => {
   }
 };
 
+const logoutAllSession = async (req, res, next) => {
+  try {
+    req.user.tokens = [];
+
+    await req.user.save();
+
+    res.status(200).json({ message: "user log out from all session" });
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
+  }
+};
+
 export default {
   registerUser,
   users,
@@ -158,4 +170,5 @@ export default {
   deleteAllUser,
   login,
   logout,
+  logoutAllSession,
 };
