@@ -6,7 +6,7 @@ import validateSchema from "../middlewares/validateSchema.js";
 import {
   blogValidation,
   updateBlogValidation,
-} from "../validation/blogValidation.js";
+} from "../validations/blogValidation.js";
 
 const router = express.Router();
 

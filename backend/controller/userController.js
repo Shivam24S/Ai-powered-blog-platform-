@@ -3,9 +3,15 @@ import HttpError from "../middlewares/errorHandler.js";
 
 const registerUser = async (req, res, next) => {
   try {
-    const { name, email, password, profilePic } = req.body;
+    const { name, email, password } = req.body;
 
     const user = await User.findOne({ email });
+
+    let profilePic = null;
+
+    if (req.file) {
+      profilePic = req.file.path;
+    }
 
     if (user) {
       return next(new HttpError("userAlready exist", 409));

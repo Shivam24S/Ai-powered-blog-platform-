@@ -6,14 +6,16 @@ import validateSchema from "../middlewares/validateSchema.js";
 import {
   userValidationSchema,
   userOptionalValidation,
-} from "../validation/userValidation.js";
+} from "../validations/userValidation.js";
 import auth from "../middlewares/auth.js";
 import authLimiter from "../middlewares/authLimiter.js";
+import upload from "../middlewares/upload.js";
 
 const router = express.Router();
 
 router.post(
   "/registerUser",
+  upload.single("profilePic"),
   validateSchema(userValidationSchema),
 
   userController.registerUser

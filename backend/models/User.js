@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
     },
   },
   profilePic: {
-    type: Buffer,
+    type: String,
   },
   Blogs: [
     {
