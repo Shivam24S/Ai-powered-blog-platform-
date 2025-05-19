@@ -11,9 +11,7 @@ async function summarizeContent(content) {
       },
       {
         headers: {
-          Authorization: `Bearer ${
-            process.env.AI_KEY || "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"
-          }`,
+          Authorization: `Bearer ${process.env.AI_KEY}`,
         },
       }
     );

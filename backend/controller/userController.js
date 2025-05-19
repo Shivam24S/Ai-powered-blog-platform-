@@ -135,6 +135,20 @@ const login = async (req, res, next) => {
   }
 };
 
+const logout = async (req, res, next) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((token) => {
+      return token.token !== req.token;
+    });
+
+    await req.user.save();
+
+    res.status(200).json({ message: "user log out successfully" });
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
+  }
+};
+
 export default {
   registerUser,
   users,
@@ -143,4 +157,5 @@ export default {
   deleteUser,
   deleteAllUser,
   login,
+  logout,
 };
