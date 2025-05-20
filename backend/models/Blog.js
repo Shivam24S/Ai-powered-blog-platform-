@@ -12,7 +12,7 @@ const BlogSchema = mongoose.Schema(
       trim: true,
       required: true,
     },
-    blogPic: {
+    blogMedia: {
       type: String,
     },
     user: {

@@ -14,7 +14,7 @@ const router = express.Router();
 router.post(
   "/addBlog",
   auth,
-  upload.single("blogPic"),
+  upload.single("blogMedia"),
   validateSchema(blogValidation),
   blogController.addBlog
 );
@@ -24,6 +24,7 @@ router.get("/blogs", blogController.blogs);
 router.patch(
   "/:id",
   auth,
+  upload.single("blogMedia"),
   validateSchema(updateBlogValidation),
   blogController.updateBlog
 );

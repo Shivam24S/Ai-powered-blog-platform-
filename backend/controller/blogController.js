@@ -17,16 +17,16 @@ const addBlog = async (req, res, next) => {
 
     const { title, description } = req.body;
 
-    let blogPic = null;
+    let blogMedia = null;
 
     if (req.file) {
-      blogPic = req.file.path;
+      blogMedia = req.file.path;
     }
 
     const newBlog = new Blog({
       title,
       description,
-      blogPic,
+      blogMedia,
       user: user._id,
     });
 
@@ -91,6 +91,10 @@ const updateBlog = async (req, res, next) => {
 
     if (!isValidUpdates) {
       return next(new HttpError("only allowed field can be updates", 400));
+    }
+
+    if (req.file && req.file.path) {
+      blog.blogMedia = req.file.path;
     }
 
     updates.forEach((update) => {

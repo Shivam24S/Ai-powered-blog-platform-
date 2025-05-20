@@ -69,7 +69,7 @@ const updateUser = async (req, res, next) => {
 
     const updates = Object.keys(req.body);
 
-    const allowedUpdate = ["name", "email", "password", "profilePic"];
+    const allowedUpdate = ["name", "email", "password"];
 
     const isValidUpdate = updates.every((update) =>
       allowedUpdate.includes(update)
@@ -77,6 +77,10 @@ const updateUser = async (req, res, next) => {
 
     if (!isValidUpdate) {
       return next(new HttpError("only allowed field can be edit", 400));
+    }
+
+    if (req.file && req.file.path) {
+      user.profilePic = req.file.path;
     }
 
     updates.forEach((update) => {

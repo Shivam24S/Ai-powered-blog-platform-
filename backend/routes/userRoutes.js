@@ -28,6 +28,7 @@ router.get("/me", auth, userController.user);
 router.patch(
   "/",
   auth,
+  upload.single("profilePic"),
   validateSchema(userOptionalValidation),
   authLimiter,
   userController.updateUser
