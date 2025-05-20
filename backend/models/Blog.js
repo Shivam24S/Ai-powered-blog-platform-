@@ -13,7 +13,7 @@ const BlogSchema = mongoose.Schema(
       required: true,
     },
     blogPic: {
-      type: Buffer,
+      type: String,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

@@ -7,12 +7,14 @@ import {
   blogValidation,
   updateBlogValidation,
 } from "../validations/blogValidation.js";
+import upload from "../middlewares/upload.js";
 
 const router = express.Router();
 
 router.post(
   "/addBlog",
   auth,
+  upload.single("blogPic"),
   validateSchema(blogValidation),
   blogController.addBlog
 );

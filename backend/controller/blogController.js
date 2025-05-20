@@ -15,7 +15,13 @@ const addBlog = async (req, res, next) => {
       return next(new HttpError("please authenticate to add Blog", 404));
     }
 
-    const { title, description, blogPic } = req.body;
+    const { title, description } = req.body;
+
+    let blogPic = null;
+
+    if (req.file) {
+      blogPic = req.file.path;
+    }
 
     const newBlog = new Blog({
       title,
