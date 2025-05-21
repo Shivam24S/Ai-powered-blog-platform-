@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import HttpError from "../middlewares/errorHandler.js";
+import sendWelcomeEmail from "../utils/email.js";
 
 const registerUser = async (req, res, next) => {
   try {
@@ -24,6 +25,8 @@ const registerUser = async (req, res, next) => {
     res
       .status(201)
       .json({ message: "user created successfully", user: userData, token });
+
+    await sendWelcomeEmail(email, name);
   } catch (error) {
     return next(new HttpError(error.message, 500));
   }
