@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import HttpError from "../middlewares/errorHandler.js";
-import sendWelcomeEmail from "../utils/email.js";
+import { welcomeEmail, userProfileUpdate } from "../emails/userEmail.js";
 
 const registerUser = async (req, res, next) => {
   try {
@@ -26,7 +26,7 @@ const registerUser = async (req, res, next) => {
       .status(201)
       .json({ message: "user created successfully", user: userData, token });
 
-    await sendWelcomeEmail(email, name);
+    await welcomeEmail(email, name);
   } catch (error) {
     return next(new HttpError(error.message, 500));
   }
@@ -91,6 +91,14 @@ const updateUser = async (req, res, next) => {
     });
 
     await user.save();
+
+    const updatedEmail = updates.includes("email")
+      ? user.email
+      : req.user.email;
+
+    const updatedName = updates.includes("name") ? user.name : req.user.name;
+
+    await userProfileUpdate(updatedEmail, updatedName);
 
     res.status(200).json({ message: "user data updated successfully", user });
   } catch (error) {
