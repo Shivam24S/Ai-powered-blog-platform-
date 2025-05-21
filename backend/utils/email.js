@@ -28,6 +28,7 @@ const sendEmail = async (email, name, template, subject) => {
 
     const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
     console.log("✅ Email sent successfully:", result);
+    return result;
   } catch (error) {
     console.error("❌ Full error:", error?.response?.text || error);
   }

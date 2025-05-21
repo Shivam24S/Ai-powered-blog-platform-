@@ -1,6 +1,10 @@
 import User from "../models/User.js";
 import HttpError from "../middlewares/errorHandler.js";
-import { welcomeEmail, userProfileUpdate } from "../emails/userEmail.js";
+import {
+  welcomeEmail,
+  userProfileUpdate,
+  accountDeletionEmail,
+} from "../emails/userEmail.js";
 
 const registerUser = async (req, res, next) => {
   try {
@@ -117,6 +121,8 @@ const deleteUser = async (req, res, next) => {
     }
 
     res.status(200).json({ message: "user deleted successfully" });
+
+    await accountDeletionEmail(req.user.email, req.user.name);
   } catch (error) {
     return next(new HttpError(error.message, 500));
   }
