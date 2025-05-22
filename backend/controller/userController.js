@@ -78,6 +78,19 @@ const updateUser = async (req, res, next) => {
 
     const allowedUpdate = ["name", "email", "password"];
 
+    if (updates.includes("email")) {
+      const existingUser = await User.findOne({ email: req.body.email });
+
+      if (
+        existingUser &&
+        existingUser._id.toString() !== req.user._id.toString()
+      ) {
+        return next(
+          new HttpError("user already existed with the same email id", 409)
+        );
+      }
+    }
+
     const isValidUpdate = updates.every((update) =>
       allowedUpdate.includes(update)
     );
