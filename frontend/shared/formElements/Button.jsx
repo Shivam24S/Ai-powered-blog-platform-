@@ -9,21 +9,20 @@ const Button = ({
   type = "button",
   disabled = false,
   className = "",
+  variant = "primary",
+  size = "md",
 }) => {
-  const baseStyles =
-    "inline-block px-5 py-2 rounded-md font-medium text-sm sm:text-base transition duration-200 ease-in-out";
+  const baseClass = `btn btn-${variant} btn-${size}`;
 
-  const disabledStyles = "bg-gray-400 text-white cursor-not-allowed";
-
-  const finalClassName = `${baseStyles} ${
-    disabled ? disabledStyles : ""
+  const combinedClass = `${baseClass} ${
+    disabled ? "btn-disabled" : ""
   } ${className}`;
 
   if (href) {
     return (
       <a
         href={href}
-        className={finalClassName}
+        className={combinedClass}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -34,7 +33,7 @@ const Button = ({
 
   if (to) {
     return (
-      <Link to={to} className={finalClassName}>
+      <Link to={to} className={combinedClass}>
         {children}
       </Link>
     );
@@ -44,7 +43,7 @@ const Button = ({
     <button
       onClick={onClick}
       type={type}
-      className={finalClassName}
+      className={combinedClass}
       disabled={disabled}
     >
       {children}
