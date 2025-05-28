@@ -1,3 +1,5 @@
+import colors from "tailwindcss/colors";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -22,6 +24,7 @@ export default {
         accent: {
           500: "#10b981",
         },
+        gray: colors.gray,
       },
     },
   },

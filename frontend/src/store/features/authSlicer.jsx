@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isAuthenticated: false,
+  isLogin: true,
 };
 
 const authSlicer = createSlice({
@@ -13,6 +14,9 @@ const authSlicer = createSlice({
     },
     logout(state) {
       state.isAuthenticated = false;
+    },
+    toggleForm(state) {
+      state.isAuthenticated = !state.isLogin;
     },
   },
 });
