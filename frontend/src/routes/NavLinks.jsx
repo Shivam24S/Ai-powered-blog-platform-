@@ -1,57 +1,29 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
+
+const links = [
+  { to: "blogs", label: "Blogs" },
+  { to: "/", label: "Sign In" },
+  { to: "writeBlog", label: "Write Blog" },
+  { to: "profile", label: "My Profile" },
+];
 
 const NavLinks = () => {
   return (
-    <ul className="flex gap-6 items-center text-black">
-      <li>
-        <NavLink
-          to="blogs"
-          className={({ isActive }) =>
-            isActive
-              ? "text-accent-500 font-semibold border-b-2 border-accent-500 pb-1"
-              : "hover:text-accent-500 transition-colors duration-200"
-          }
-        >
-          Blogs
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            isActive
-              ? "text-accent-500 font-semibold border-b-2 border-accent-500 pb-1"
-              : "hover:text-accent-500 transition-colors duration-200"
-          }
-        >
-          Sign In
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="writeBlog"
-          className={({ isActive }) =>
-            isActive
-              ? "text-accent-500 font-semibold border-b-2 border-accent-500 pb-1"
-              : "hover:text-accent-500 transition-colors duration-200"
-          }
-        >
-          Write Blog
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="profile"
-          className={({ isActive }) =>
-            isActive
-              ? "text-accent-500 font-semibold border-b-2 border-accent-500 pb-1"
-              : "hover:text-accent-500 transition-colors duration-200"
-          }
-        >
-          My Profile
-        </NavLink>
-      </li>
+    <ul className="menu menu-horizontal px-1 gap-2 text-white">
+      {links.map(({ to, label }) => (
+        <li key={to}>
+          <NavLink
+            to={to}
+            className={({ isActive }) =>
+              isActive
+                ? "btn btn-sm btn-active btn-primary font-semibold"
+                : "btn btn-sm btn-ghost hover:bg-primary hover:text-white"
+            }
+          >
+            {label}
+          </NavLink>
+        </li>
+      ))}
     </ul>
   );
 };
