@@ -6,6 +6,7 @@ import Auth from "./auth/Auth";
 import Blogs from "./blogs/Blogs";
 import Signup from "./auth/Signup";
 import { queryClient } from "../utils/http";
+import User from "./users/User";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -24,6 +25,10 @@ const App = () => {
         {
           path: "signup",
           element: <Signup />,
+        },
+        {
+          path: "profile",
+          element: <User />,
         },
       ],
     },

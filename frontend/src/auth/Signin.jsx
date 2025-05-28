@@ -3,10 +3,12 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import Button from "../../shared/formElements/Button";
 import InputField from "../../shared/formElements/InputField";
 import { httpRequest } from "../../utils/http";
+import { authActions } from "../store/features/authSlicer";
 
 // Validation schema using Yup
 const SignInSchema = Yup.object().shape({
@@ -19,12 +21,16 @@ const SignInSchema = Yup.object().shape({
 const SignIn = () => {
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   const { mutate, isError, error, isPending } = useMutation({
     mutationFn: (data) =>
       httpRequest({ url: "/user/login", method: "POST", body: data }),
-    onSuccess: () => {
+    onSuccess: (data) => {
       console.log("user logged in");
-      navigate("blogs");
+      dispatch(authActions.login());
+      dispatch(authActions.setCurrentUser(data.user));
+      navigate("/profile");
     },
   });
 
