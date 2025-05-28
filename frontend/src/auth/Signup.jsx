@@ -1,10 +1,11 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Button from "../../shared/formElements/Button";
+import InputField from "../../shared/formElements/InputField";
 
 // Validation Schema using Yup
 const SignupSchema = Yup.object().shape({
-  profilePic: Yup.mixed().required("Profile picture is required"),
   name: Yup.string().min(2, "Too Short!").required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
@@ -14,9 +15,11 @@ const SignupSchema = Yup.object().shape({
 
 const Signup = () => {
   return (
-    <section className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center mb-6">Sign Up</h2>
+    <section className="flex justify-center items-center min-h-screen bg-base-200 px-4">
+      <div className="card w-full max-w-md bg-white shadow-xl p-6">
+        <h2 className="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text uppercase tracking-wide">
+          Sign Up
+        </h2>
 
         <Formik
           initialValues={{
@@ -42,12 +45,9 @@ const Signup = () => {
           {({ setFieldValue, isSubmitting }) => (
             <Form className="space-y-4">
               {/* Profile Picture */}
-              <div>
-                <label
-                  htmlFor="profilePic"
-                  className="block text-sm font-medium mb-1"
-                >
-                  Profile Picture
+              <div className="form-control w-full">
+                <label htmlFor="profilePic" className="label">
+                  <span className="label-text">Profile Picture</span>
                 </label>
                 <input
                   type="file"
@@ -56,83 +56,58 @@ const Signup = () => {
                   onChange={(event) => {
                     setFieldValue("profilePic", event.currentTarget.files[0]);
                   }}
-                  className="block w-full text-sm"
+                  className="file-input file-input-bordered w-full"
                 />
                 <ErrorMessage
                   name="profilePic"
                   component="div"
-                  className="text-sm text-red-600 mt-1"
+                  className="text-sm text-red-500 mt-1"
                 />
               </div>
 
               {/* Name */}
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium mb-1"
-                >
-                  Name
-                </label>
-                <Field
-                  type="text"
-                  name="name"
-                  className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-sm text-red-600 mt-1"
-                />
-              </div>
+              <InputField
+                label="Name"
+                name="name"
+                type="text"
+                placeholder="Enter your name"
+              />
 
               {/* Email */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium mb-1"
-                >
-                  Email
-                </label>
-                <Field
-                  type="email"
-                  name="email"
-                  className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-sm text-red-600 mt-1"
-                />
-              </div>
+              <InputField
+                label="Email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+              />
 
               {/* Password */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium mb-1"
-                >
-                  Password
-                </label>
-                <Field
-                  type="password"
-                  name="password"
-                  className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-sm text-red-600 mt-1"
-                />
-              </div>
+              <InputField
+                label="Password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+              />
 
               {/* Submit Button */}
-              <button
+              <Button
                 type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-md transition"
                 disabled={isSubmitting}
+                variant="primary"
+                size="md"
+                className="w-full mt-2"
               >
                 {isSubmitting ? "Signing up..." : "Sign Up"}
-              </button>
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                className="w-full"
+                to="/"
+              >
+                Switch to Log in
+              </Button>
             </Form>
           )}
         </Formik>

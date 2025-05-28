@@ -1,7 +1,8 @@
 import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import Button from "../../shared/formElements/Button";
+import InputField from "../../shared/formElements/InputField";
 
 // Validation schema using Yup
 const SignInSchema = Yup.object().shape({
@@ -13,10 +14,10 @@ const SignInSchema = Yup.object().shape({
 
 const SignIn = () => {
   return (
-    <section className="flex justify-center items-center min-h-screen bg-primary-50 px-4">
-      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md space-y-4">
-        <h2 className="text-2xl font-semibold text-primary-700 text-center mb-4">
-          Log in Required
+    <section className="flex justify-center items-center min-h-screen bg-base-200 px-4">
+      <div className="card w-full max-w-md bg-white shadow-xl p-6">
+        <h2 className="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text uppercase tracking-wide">
+          LOG IN
         </h2>
 
         <Formik
@@ -30,58 +31,38 @@ const SignIn = () => {
         >
           {({ isSubmitting }) => (
             <Form className="space-y-4">
-              {/* Email */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-1 font-medium text-sm"
-                >
-                  Email
-                </label>
-                <Field
-                  type="email"
-                  name="email"
-                  className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-sm text-red-600 mt-1"
-                />
-              </div>
+              <InputField
+                label="Email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+              />
 
-              {/* Password */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-1 font-medium text-sm"
-                >
-                  Password
-                </label>
-                <Field
-                  type="password"
-                  name="password"
-                  className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-sm text-red-600 mt-1"
-                />
-              </div>
+              <InputField
+                label="Password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+              />
 
               {/* Buttons */}
-              <div className="mt-6 space-y-3">
+              <div className="space-y-3 pt-2">
                 <Button
                   type="submit"
-                  className="w-full bg-primary-500 hover:bg-primary-600 text-black "
                   disabled={isSubmitting}
+                  variant="primary"
+                  size="md"
+                  className="w-full"
                 >
                   {isSubmitting ? "Logging in..." : "Log In"}
                 </Button>
+
                 <Button
                   type="button"
-                  className="w-full bg-secondary-500 hover:bg-secondary-600 text-black"
+                  variant="secondary"
+                  size="md"
+                  className="w-full"
+                  to="/signup"
                 >
                   Switch to Sign Up
                 </Button>

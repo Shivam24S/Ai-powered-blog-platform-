@@ -13,27 +13,22 @@ const InputField = ({
     <div className="form-control w-full">
       {label && (
         <label htmlFor={id || name} className="label">
-          <span className="label-text">{label}</span>
+          <span className="label-text font-medium text-sm">{label}</span>
         </label>
       )}
 
-      {element === "textarea" ? (
-        <Field
-          as="textarea"
-          id={id || name}
-          name={name}
-          placeholder={placeholder}
-          className="textarea textarea-bordered w-full"
-        />
-      ) : (
-        <Field
-          id={id || name}
-          name={name}
-          type={type}
-          placeholder={placeholder}
-          className="input input-bordered w-full"
-        />
-      )}
+      <Field
+        as={element === "textarea" ? "textarea" : "input"}
+        id={id || name}
+        name={name}
+        type={type}
+        placeholder={placeholder}
+        className={
+          element === "textarea"
+            ? "textarea textarea-bordered w-full"
+            : "input input-bordered w-full"
+        }
+      />
 
       <ErrorMessage
         name={name}
