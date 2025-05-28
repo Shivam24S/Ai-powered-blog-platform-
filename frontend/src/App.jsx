@@ -1,9 +1,11 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 import MainNavigation from "./routes/MainNavigation";
 import Auth from "./auth/Auth";
 import Blogs from "./blogs/Blogs";
 import Signup from "./auth/Signup";
+import { queryClient } from "../utils/http";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -29,7 +31,9 @@ const App = () => {
 
   return (
     <>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </>
   );
 };
