@@ -1,8 +1,12 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+
 import Button from "../../shared/formElements/Button";
 import InputField from "../../shared/formElements/InputField";
+import { httpRequest } from "../../utils/http";
 
 // Validation schema using Yup
 const SignInSchema = Yup.object().shape({
@@ -13,6 +17,33 @@ const SignInSchema = Yup.object().shape({
 });
 
 const SignIn = () => {
+  const navigate = useNavigate();
+
+  const { mutate, isError, error, isPending } = useMutation({
+    mutationFn: (data) =>
+      httpRequest({ url: "/user/login", method: "POST", body: data }),
+    onSuccess: () => {
+      console.log("user logged in");
+      navigate("blogs");
+    },
+  });
+
+  let content;
+
+  if (isPending) {
+    content = (
+      <p className="text-center text-sm text-gray-500 mt-4">Loading...</p>
+    );
+  }
+
+  if (isError) {
+    content = (
+      <h4 className="text-red-500 text-center mt-4">
+        {error?.message || "Something went wrong"}
+      </h4>
+    );
+  }
+
   return (
     <section className="flex justify-center items-center min-h-screen bg-base-200 px-4">
       <div className="card w-full max-w-md bg-white shadow-xl p-6">
@@ -23,10 +54,9 @@ const SignIn = () => {
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={SignInSchema}
-          onSubmit={(values, { setSubmitting }) => {
+          onSubmit={(values) => {
             console.log("Form Submitted:", values);
-            setSubmitting(false);
-            // handle your login logic here
+            mutate(values);
           }}
         >
           {({ isSubmitting }) => (
@@ -71,6 +101,7 @@ const SignIn = () => {
           )}
         </Formik>
       </div>
+      {content}
     </section>
   );
 };
