@@ -1,13 +1,16 @@
 import { NavLink } from "react-router-dom";
-
-const links = [
-  { to: "blogs", label: "Blogs" },
-  { to: "/", label: "Sign In" },
-  { to: "writeBlog", label: "Write Blog" },
-  { to: "profile", label: "My Profile" },
-];
+import { useSelector } from "react-redux";
 
 const NavLinks = () => {
+  const currentUser = useSelector((state) => state.auth.currentUser);
+
+  const links = [
+    { to: "blogs", label: "Blogs" },
+    !currentUser && { to: "/", label: "Sign In" },
+    currentUser && { to: "writeBlog", label: "Write Blog" },
+    currentUser && { to: "profile", label: "My Profile" },
+  ].filter(Boolean);
+
   return (
     <ul className="menu menu-horizontal px-1 gap-2 text-white">
       {links.map(({ to, label }) => (
