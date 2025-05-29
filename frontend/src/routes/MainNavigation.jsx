@@ -1,14 +1,22 @@
 import { Outlet } from "react-router-dom";
 import MainHeader from "./MainHeader";
 import NavLinks from "./NavLinks";
+import { useState } from "react";
+import SideDrawer from "./SideDrawer";
 
 const MainNavigation = () => {
+  const [showDrawer, setShowDrawer] = useState(false);
+
   return (
     <>
       <MainHeader>
         {/* Mobile hamburger menu - shown only on mobile */}
         <div className="md:hidden">
-          <button className="btn btn-ghost btn-square">
+          <button
+            className="btn btn-ghost btn-square"
+            aria-label="Open navigation menu"
+            onClick={() => setShowDrawer(true)}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -24,6 +32,13 @@ const MainNavigation = () => {
               />
             </svg>
           </button>
+
+          <SideDrawer
+            show={showDrawer}
+            closeDrawer={() => setShowDrawer(false)}
+          >
+            <NavLinks onLinkClick={() => setShowDrawer(false)} />
+          </SideDrawer>
         </div>
 
         {/* Logo / App Title */}

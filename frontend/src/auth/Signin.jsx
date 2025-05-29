@@ -9,6 +9,7 @@ import Button from "../../shared/formElements/Button";
 import InputField from "../../shared/formElements/InputField";
 import { httpRequest } from "../../utils/http";
 import { authActions } from "../store/features/authSlicer";
+import LoadingSpinner from "../../shared/components/LoadingSpinner";
 
 // Validation schema using Yup
 const SignInSchema = Yup.object().shape({
@@ -37,9 +38,7 @@ const SignIn = () => {
   let content;
 
   if (isPending) {
-    content = (
-      <p className="text-center text-sm text-gray-500 mt-4">Loading...</p>
-    );
+    content = <LoadingSpinner />;
   }
 
   if (isError) {
