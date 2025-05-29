@@ -1,10 +1,18 @@
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import React, { useState } from "react";
+import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 import Button from "../../shared/formElements/Button";
 import InputField from "../../shared/formElements/InputField";
+import LoadingSpinner from "../../shared/components/LoadingSpinner";
+import ErrorModal from "../../shared/components/ErrorModal";
+import { httpRequest } from "../../utils/http";
+import { authActions } from "../store/features/authSlicer";
 
-// Validation Schema using Yup
+// Validation Schema
 const SignupSchema = Yup.object().shape({
   name: Yup.string().min(2, "Too Short!").required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -14,9 +22,34 @@ const SignupSchema = Yup.object().shape({
 });
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const [errorState, setErrorState] = useState(null);
+
+  const dispatch = useDispatch();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (formData) =>
+      httpRequest({
+        url: "/user/registerUser",
+        method: "POST",
+        body: formData,
+        isMultipart: true,
+      }),
+    onSuccess: (data) => {
+      dispatch(authActions.setCurrentUser(data.user));
+      setTimeout(() => {
+        navigate("/profile");
+      }, 300);
+    },
+    onError: (err) => {
+      console.log(err.message);
+      setErrorState(err?.response?.data?.message || "Something went wrong!");
+    },
+  });
+
   return (
-    <section className="flex justify-center items-center min-h-screen bg-base-200 px-4">
-      <div className="card w-full max-w-md bg-white shadow-xl p-6">
+    <section className="flex justify-center items-center min-h-screen bg-base-200 px-4 relative">
+      <div className="card w-full max-w-md bg-base-100 shadow-xl p-6 z-10">
         <h2 className="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text uppercase tracking-wide">
           Sign Up
         </h2>
@@ -29,25 +62,35 @@ const Signup = () => {
             password: "",
           }}
           validationSchema={SignupSchema}
-          onSubmit={(values, { setSubmitting }) => {
+          onSubmit={(values, { setSubmitting, resetForm }) => {
             const formData = new FormData();
-            formData.append("profilePic", values.profilePic);
+
+            if (values.profilePic) {
+              formData.append("profilePic", values.profilePic);
+            }
+
             formData.append("name", values.name);
             formData.append("email", values.email);
             formData.append("password", values.password);
 
-            console.log("Form Data:", values);
-
-            // Submit formData via fetch or axios here
-            setSubmitting(false);
+            mutate(formData, {
+              onError: () => {
+                resetForm();
+              },
+              onSettled: () => {
+                setSubmitting(false);
+              },
+            });
           }}
         >
-          {({ setFieldValue, isSubmitting }) => (
+          {({ setFieldValue }) => (
             <Form className="space-y-4">
               {/* Profile Picture */}
               <div className="form-control w-full">
                 <label htmlFor="profilePic" className="label">
-                  <span className="label-text">Profile Picture</span>
+                  <span className="label-text font-semibold">
+                    Profile Picture
+                  </span>
                 </label>
                 <input
                   type="file"
@@ -61,11 +104,10 @@ const Signup = () => {
                 <ErrorMessage
                   name="profilePic"
                   component="div"
-                  className="text-sm text-red-500 mt-1"
+                  className="text-sm text-error mt-1"
                 />
               </div>
 
-              {/* Name */}
               <InputField
                 label="Name"
                 name="name"
@@ -73,7 +115,6 @@ const Signup = () => {
                 placeholder="Enter your name"
               />
 
-              {/* Email */}
               <InputField
                 label="Email"
                 name="email"
@@ -81,7 +122,6 @@ const Signup = () => {
                 placeholder="Enter your email"
               />
 
-              {/* Password */}
               <InputField
                 label="Password"
                 name="password"
@@ -89,29 +129,43 @@ const Signup = () => {
                 placeholder="Enter your password"
               />
 
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                variant="primary"
-                size="md"
-                className="w-full mt-2"
-              >
-                {isSubmitting ? "Signing up..." : "Sign Up"}
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                size="md"
-                className="w-full"
-                to="/"
-              >
-                Switch to Log in
-              </Button>
+              <div className="space-y-3 pt-2">
+                <Button
+                  type="submit"
+                  disabled={isPending}
+                  variant="primary"
+                  size="md"
+                  className="w-full"
+                >
+                  {isPending ? "Signing up..." : "Sign Up"}
+                </Button>
+
+                {!isPending && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="md"
+                    className="w-full"
+                    to="/"
+                  >
+                    Switch to Log in
+                  </Button>
+                )}
+              </div>
             </Form>
           )}
         </Formik>
       </div>
+
+      {isPending && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-50">
+          <LoadingSpinner loadingText="Creating your account..." />
+        </div>
+      )}
+
+      {errorState && (
+        <ErrorModal error={errorState} onClear={() => setErrorState(null)} />
+      )}
     </section>
   );
 };
