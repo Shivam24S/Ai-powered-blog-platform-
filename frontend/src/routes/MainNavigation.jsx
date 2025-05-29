@@ -44,13 +44,11 @@ const MainNavigation = () => {
         {/* Logo / App Title */}
         <h1 className="text-xl font-bold text-white">AI Blog</h1>
 
-        {/* Nav links - shown only on md+ screens */}
         <nav className="hidden md:flex ml-auto gap-4">
           <NavLinks />
         </nav>
       </MainHeader>
 
-      {/* Main content below the fixed header */}
       <main className="mt-16 px-4 w-full max-w-6xl mx-auto">
         <Outlet />
       </main>

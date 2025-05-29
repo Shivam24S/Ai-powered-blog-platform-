@@ -24,7 +24,6 @@ const SideDrawer = ({ children, show, closeDrawer }) => {
           ✕
         </button>
 
-        {/* Center content */}
         <div className="h-full flex flex-col justify-center items-center">
           {children}
         </div>
