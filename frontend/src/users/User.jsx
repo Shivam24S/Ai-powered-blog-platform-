@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Button from "../../shared/formElements/Button";
 
 const User = () => {
   const user = useSelector((state) => state.auth.currentUser);
@@ -34,12 +35,12 @@ const User = () => {
 
           {/* Edit Button */}
           <div className="mt-4">
-            <Link
-              to="/edit-profile"
+            <Button
               className="btn btn-outline btn-primary w-full"
+              to="/editProfile"
             >
               Edit Profile
-            </Link>
+            </Button>
           </div>
         </div>
       </div>

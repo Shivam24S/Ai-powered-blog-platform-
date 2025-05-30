@@ -18,7 +18,7 @@ const ImageUpload = ({ name, id, placeholder, onImageSelect, previewUrl }) => {
   };
 
   return (
-    <div className="form-control w-full max-w-xs mx-auto">
+    <div className="form-control w-half max-w-xs mx-auto">
       <input
         type="file"
         name={name}

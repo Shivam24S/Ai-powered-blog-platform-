@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
 import SignIn from "./SignIn";
-import Signup from "./Signup"; //
+import UserForm from "./UserForm"; //
 
 const Auth = () => {
-  const isLogin = useSelector((state) => state.auth.isLogin);
+  const isLoginMode = useSelector((state) => state.auth.isLoginMode);
 
-  return <>{isLogin ? <SignIn /> : <Signup />}</>;
+  return <>{isLoginMode === true ? <SignIn /> : <UserForm />}</>;
 };
 
 export default Auth;

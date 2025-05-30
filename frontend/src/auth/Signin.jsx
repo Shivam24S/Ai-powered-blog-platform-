@@ -27,9 +27,13 @@ const SignIn = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: (data) =>
       httpRequest({ url: "/user/login", method: "POST", body: data }),
-    onSuccess: (data) => {
-      dispatch(authActions.login());
-      dispatch(authActions.setCurrentUser(data.user));
+    onSuccess: (responseData) => {
+      dispatch(
+        authActions.login({
+          user: responseData.user,
+          token: responseData.token,
+        })
+      );
       navigate("/profile");
     },
     onError: (err) => {
@@ -86,7 +90,7 @@ const SignIn = () => {
                     variant="secondary"
                     size="md"
                     className="w-full"
-                    to="/signup"
+                    onClick={() => dispatch(authActions.setLoginMode(false))}
                   >
                     Switch to Sign Up
                   </Button>

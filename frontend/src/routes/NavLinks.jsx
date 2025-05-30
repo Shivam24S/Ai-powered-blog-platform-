@@ -2,13 +2,13 @@ import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const NavLinks = ({ onLinkClick }) => {
-  const currentUser = useSelector((state) => state.auth.currentUser);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const links = [
     { to: "blogs", label: "Blogs" },
-    !currentUser && { to: "/", label: "Sign In" },
-    currentUser && { to: "writeBlog", label: "Write Blog" },
-    currentUser && { to: "profile", label: "My Profile" },
+    !isAuthenticated && { to: "/", label: "Sign In" },
+    isAuthenticated && { to: "writeBlog", label: "Write Blog" },
+    isAuthenticated && { to: "profile", label: "My Profile" },
   ].filter(Boolean);
 
   return (

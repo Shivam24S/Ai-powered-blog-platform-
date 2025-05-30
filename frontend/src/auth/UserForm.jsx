@@ -3,7 +3,7 @@ import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Button from "../../shared/formElements/Button";
 import InputField from "../../shared/formElements/InputField";
@@ -13,36 +13,44 @@ import { httpRequest } from "../../utils/http";
 import { authActions } from "../store/features/authSlicer";
 import ImageUpload from "../../shared/formElements/ImageUpload";
 
-const SignupSchema = Yup.object().shape({
+const UserFormSchema = Yup.object().shape({
   name: Yup.string().min(2, "Too Short!").required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
+    .min(6, "Too short")
+    .when("isEditMode", {
+      is: false,
+      then: (schema) => schema.required("Password is required"),
+    }),
 });
 
-const Signup = () => {
+const UserForm = ({ isEditMode = false }) => {
   const [errorState, setErrorState] = useState(null);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { currentUser: user, token } = useSelector((state) => state.auth);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (formData) =>
       httpRequest({
-        url: "/user/registerUser",
-        method: "POST",
+        url: isEditMode ? "/user" : "/user/registerUser",
+        method: isEditMode ? "PATCH" : "POST",
         body: formData,
-        isMultipart: true,
+        headers: isEditMode ? { Authorization: `Bearer ${token}` } : {},
       }),
-    onSuccess: (data) => {
-      dispatch(authActions.setCurrentUser(data.user));
+    onSuccess: (responseData) => {
+      dispatch(
+        authActions.login({
+          user: responseData.user,
+          token: responseData.token,
+        })
+      );
       setTimeout(() => {
-        navigate("/profile");
+        navigate(isEditMode ? "/profile" : "/profile");
       }, 300);
     },
     onError: (err) => {
-      console.log(err.message);
       setErrorState(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -50,54 +58,49 @@ const Signup = () => {
   return (
     <section className="flex justify-center items-center min-h-screen bg-base-200 px-4 relative">
       <div className="card w-full max-w-md bg-base-100 shadow-xl p-6 z-10">
-        <h2 className="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text uppercase tracking-wide">
-          Sign Up
+        <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text uppercase tracking-wide">
+          {isEditMode ? "Edit Profile" : "Sign Up"}
         </h2>
 
         <Formik
+          enableReinitialize
           initialValues={{
             profilePic: null,
-            name: "",
-            email: "",
+            name: isEditMode && user ? user.name : "",
+            email: isEditMode && user ? user.email : "",
             password: "",
           }}
-          validationSchema={SignupSchema}
+          validationSchema={UserFormSchema}
           onSubmit={(values, { setSubmitting, resetForm }) => {
             const formData = new FormData();
-            if (values.profilePic) {
+            if (values.profilePic)
               formData.append("profilePic", values.profilePic);
-            }
             formData.append("name", values.name);
             formData.append("email", values.email);
-            formData.append("password", values.password);
+            if (!isEditMode) formData.append("password", values.password);
 
             mutate(formData, {
-              onError: () => {
-                resetForm();
-              },
-              onSettled: () => {
-                setSubmitting(false);
-              },
+              onError: () => resetForm(),
+              onSettled: () => setSubmitting(false),
             });
           }}
         >
           {({ setFieldValue }) => (
             <Form className="space-y-4">
-              <div className="flex justify-center mb-4">
-                <div className="flex flex-col items-center">
-                  <ImageUpload
-                    name="profilePic"
-                    id="profilePic"
-                    placeholder="click to upload Profile Picture"
-                    onImageSelect={(file) => setFieldValue("profilePic", file)}
-                  />
-                  <ErrorMessage
-                    name="profilePic"
-                    component="div"
-                    className="text-sm text-error mt-2 text-center"
-                  />
-                </div>
+              <div className="flex justify-center">
+                <ImageUpload
+                  name="profilePic"
+                  id="profilePic"
+                  placeholder="Click to upload profile picture"
+                  previewUrl={isEditMode ? user?.profilePic : null}
+                  onImageSelect={(file) => setFieldValue("profilePic", file)}
+                />
               </div>
+              <ErrorMessage
+                name="profilePic"
+                component="div"
+                className="text-sm text-error mt-1 text-center"
+              />
 
               <InputField
                 label="Name"
@@ -113,12 +116,14 @@ const Signup = () => {
                 placeholder="Enter your email"
               />
 
-              <InputField
-                label="Password"
-                name="password"
-                type="password"
-                placeholder="Enter your password"
-              />
+              {!isEditMode && (
+                <InputField
+                  label="Password"
+                  name="password"
+                  type="password"
+                  placeholder="Enter your password"
+                />
+              )}
 
               <div className="space-y-3 pt-2">
                 <Button
@@ -128,16 +133,22 @@ const Signup = () => {
                   size="md"
                   className="w-full"
                 >
-                  {isPending ? "Signing up..." : "Sign Up"}
+                  {isPending
+                    ? isEditMode
+                      ? "Updating..."
+                      : "Signing up..."
+                    : isEditMode
+                    ? "Update Profile"
+                    : "Sign Up"}
                 </Button>
 
-                {!isPending && (
+                {!isPending && !isEditMode && (
                   <Button
                     type="button"
                     variant="secondary"
                     size="md"
                     className="w-full"
-                    to="/"
+                    onClick={() => dispatch(authActions.setLoginMode(true))}
                   >
                     Switch to Log in
                   </Button>
@@ -150,7 +161,11 @@ const Signup = () => {
 
       {isPending && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-50">
-          <LoadingSpinner loadingText="Creating your account..." />
+          <LoadingSpinner
+            loadingText={
+              isEditMode ? "Updating profile..." : "Creating your account..."
+            }
+          />
         </div>
       )}
 
@@ -161,4 +176,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default UserForm;
