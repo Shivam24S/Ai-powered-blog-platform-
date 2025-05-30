@@ -5,12 +5,12 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import Button from "../../shared/formElements/Button";
-import InputField from "../../shared/formElements/InputField";
+import Button from "../shared/formElements/Button";
+import InputField from "../shared/formElements/InputField";
 import { httpRequest } from "../../utils/http";
 import { authActions } from "../store/features/authSlicer";
-import LoadingSpinner from "../../shared/components/LoadingSpinner";
-import ErrorModal from "../../shared/components/ErrorModal";
+import LoadingSpinner from "../shared/components/LoadingSpinner";
+import ErrorModal from "../shared/components/ErrorModal";
 
 const SignInSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),

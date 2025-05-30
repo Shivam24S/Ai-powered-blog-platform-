@@ -5,13 +5,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import Button from "../../shared/formElements/Button";
-import InputField from "../../shared/formElements/InputField";
-import LoadingSpinner from "../../shared/components/LoadingSpinner";
-import ErrorModal from "../../shared/components/ErrorModal";
+import Button from "../shared/formElements/Button";
+import InputField from "../shared/formElements/InputField";
+import LoadingSpinner from "../shared/components/LoadingSpinner";
+import ErrorModal from "../shared/components/ErrorModal";
 import { httpRequest } from "../../utils/http";
 import { authActions } from "../store/features/authSlicer";
-import ImageUpload from "../../shared/formElements/ImageUpload";
+import ImageUpload from "../shared/formElements/ImageUpload";
 
 const UserFormSchema = Yup.object().shape({
   name: Yup.string().min(2, "Too Short!").required("Name is required"),

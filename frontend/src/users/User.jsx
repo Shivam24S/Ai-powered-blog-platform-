@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import Button from "../../shared/formElements/Button";
+
+import Button from "../shared/formElements/Button";
 
 const User = () => {
   const user = useSelector((state) => state.auth.currentUser);
