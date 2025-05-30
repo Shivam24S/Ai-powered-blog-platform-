@@ -11,8 +11,8 @@ import LoadingSpinner from "../../shared/components/LoadingSpinner";
 import ErrorModal from "../../shared/components/ErrorModal";
 import { httpRequest } from "../../utils/http";
 import { authActions } from "../store/features/authSlicer";
+import ImageUpload from "../../shared/formElements/ImageUpload";
 
-// Validation Schema
 const SignupSchema = Yup.object().shape({
   name: Yup.string().min(2, "Too Short!").required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -22,9 +22,9 @@ const SignupSchema = Yup.object().shape({
 });
 
 const Signup = () => {
-  const navigate = useNavigate();
   const [errorState, setErrorState] = useState(null);
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { mutate, isPending } = useMutation({
@@ -64,11 +64,9 @@ const Signup = () => {
           validationSchema={SignupSchema}
           onSubmit={(values, { setSubmitting, resetForm }) => {
             const formData = new FormData();
-
             if (values.profilePic) {
               formData.append("profilePic", values.profilePic);
             }
-
             formData.append("name", values.name);
             formData.append("email", values.email);
             formData.append("password", values.password);
@@ -85,27 +83,20 @@ const Signup = () => {
         >
           {({ setFieldValue }) => (
             <Form className="space-y-4">
-              {/* Profile Picture */}
-              <div className="form-control w-full">
-                <label htmlFor="profilePic" className="label">
-                  <span className="label-text font-semibold">
-                    Profile Picture
-                  </span>
-                </label>
-                <input
-                  type="file"
-                  name="profilePic"
-                  accept="image/*"
-                  onChange={(event) => {
-                    setFieldValue("profilePic", event.currentTarget.files[0]);
-                  }}
-                  className="file-input file-input-bordered w-full"
-                />
-                <ErrorMessage
-                  name="profilePic"
-                  component="div"
-                  className="text-sm text-error mt-1"
-                />
+              <div className="flex justify-center mb-4">
+                <div className="flex flex-col items-center">
+                  <ImageUpload
+                    name="profilePic"
+                    id="profilePic"
+                    placeholder="click to upload Profile Picture"
+                    onImageSelect={(file) => setFieldValue("profilePic", file)}
+                  />
+                  <ErrorMessage
+                    name="profilePic"
+                    component="div"
+                    className="text-sm text-error mt-2 text-center"
+                  />
+                </div>
               </div>
 
               <InputField
