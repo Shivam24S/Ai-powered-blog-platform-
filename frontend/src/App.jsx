@@ -8,12 +8,14 @@ import UserForm from "./auth/UserForm";
 import { queryClient } from "../utils/http";
 import User from "./users/User";
 import ProtectedRoute from "./routes/ProtectedRoutes";
+import ErrorElement from "./routes/ErrorElement";
 
 const App = () => {
   const router = createBrowserRouter([
     {
       path: "/",
       element: <MainNavigation />,
+      errorElement: <ErrorElement />,
       children: [
         {
           index: true,
