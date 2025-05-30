@@ -7,7 +7,7 @@ import Blogs from "./blogs/Blogs";
 import UserForm from "./auth/UserForm";
 import { queryClient } from "../utils/http";
 import User from "./users/User";
-import ProtectedRoute from "./routes/ProtectedRoute";
+import ProtectedRoute from "./routes/ProtectedRoutes";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -29,7 +29,19 @@ const App = () => {
         },
         {
           path: "profile",
-          element: <User />,
+          element: (
+            <ProtectedRoute>
+              <User />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "editProfile",
+          element: (
+            <ProtectedRoute>
+              <UserForm isEditMode={true} />
+            </ProtectedRoute>
+          ),
         },
       ],
     },
