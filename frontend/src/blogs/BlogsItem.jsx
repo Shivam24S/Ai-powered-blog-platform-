@@ -4,7 +4,14 @@ import Button from "../shared/formElements/Button";
 import { isVideo } from "../../utils/isVideo";
 import { useSelector } from "react-redux";
 
-const BlogsItem = ({ id, title, description, author, blogMedia, user }) => {
+const BlogsItem = ({
+  id,
+  title,
+  description,
+  author,
+  blogMedia,
+  user: userId,
+}) => {
   const { currentUser } = useSelector((state) => state.auth);
 
   if (!id) {
@@ -55,36 +62,38 @@ const BlogsItem = ({ id, title, description, author, blogMedia, user }) => {
         </div>
 
         <div className="flex justify-between items-center mt-4 flex-wrap">
-          {/* Author Info */}
-          <div className="flex items-center gap-3">
-            <div className="avatar">
-              <div className="w-8 h-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                <img
-                  src={
-                    author?.image ||
-                    "https://ui-avatars.com/api/?name=Anonymous&background=random"
-                  }
-                  alt={author?.name || "Anonymous"}
-                />
+          {(!currentUser || currentUser.id !== userId) && author && (
+            <div className="flex items-center gap-3">
+              <div className="avatar">
+                <div className="w-8 h-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                  <img
+                    src={
+                      author?.image ||
+                      "https://ui-avatars.com/api/?name=Anonymous&background=random"
+                    }
+                    alt={author?.name || "Anonymous"}
+                  />
+                </div>
               </div>
+              <span className="text-sm text-gray-500">
+                By {author?.name || "Anonymous"}
+              </span>
             </div>
-            <span className="text-sm text-gray-500">
-              By {author?.name || "Anonymous"}
-            </span>
-          </div>
-
-          {/* Read More Button using your custom Button */}
-          <Button to={`/blogDetails/${id}`} className="mt-2 lg:mt-0">
-            Read More
-          </Button>
-          {currentUser && author && currentUser._id === user._id && (
-            <Button
-              to={`/editBlog/${id}`}
-              className="btn-outline btn-secondary"
-            >
-              Edit Blog
-            </Button>
           )}
+
+          <div className="flex items-center gap-2 mt-2 lg:mt-0 ml-auto">
+            <Button to={`/blogDetails/${id}`} className="btn-sm">
+              Read More
+            </Button>
+            {currentUser && userId && currentUser.id === userId && (
+              <Button
+                to={`/editBlog/${id}`}
+                className="btn-sm btn-outline btn-secondary"
+              >
+                Edit Blog
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

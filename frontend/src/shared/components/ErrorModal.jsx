@@ -1,4 +1,3 @@
-// ErrorModal.jsx
 const ErrorModal = ({ error, onClear }) => {
   return (
     <div className="modal modal-open">

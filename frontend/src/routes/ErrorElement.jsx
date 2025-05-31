@@ -1,6 +1,10 @@
+import { useSelector } from "react-redux";
 import { useRouteError, Link } from "react-router-dom";
+import Button from "../shared/formElements/Button";
 
 const ErrorElement = () => {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
   const error = useRouteError();
   console.error(error);
 
@@ -27,9 +31,12 @@ const ErrorElement = () => {
             </p>
           </div>
 
-          <Link to="/" className="btn btn-primary mt-4">
+          <Button
+            className="btn btn-primary mt-4"
+            to={isAuthenticated ? "/blogs" : "/"}
+          >
             Go Back Home
-          </Link>
+          </Button>
         </div>
       </div>
     </div>

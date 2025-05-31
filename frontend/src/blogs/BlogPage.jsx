@@ -7,10 +7,14 @@ import ErrorModal from "../shared/components/ErrorModal";
 import { isVideo } from "../../utils/isVideo";
 import Button from "../shared/formElements/Button";
 import SummaryComponent from "./SummaryComponent";
+import { useSelector } from "react-redux";
 
 const BlogDetails = () => {
   const [errorState, setErrorState] = useState(null);
   const [showSummary, setShowSummary] = useState(false);
+
+  const { currentUser } = useSelector((state) => state.auth);
+
   const { id } = useParams();
 
   const {
@@ -50,22 +54,24 @@ const BlogDetails = () => {
             {blog?.title || "Untitled Blog"}
           </h2>
 
-          <div className="flex items-center gap-4">
-            <div className="avatar">
-              <div className="w-12 rounded-full">
-                <img
-                  src={
-                    blog.author?.avatar ||
-                    "https://ui-avatars.com/api/?name=Anonymous"
-                  }
-                  alt={blog.author?.name || "Anonymous"}
-                />
+          {currentUser.id !== blog.user && (
+            <div className="flex items-center gap-3 mt-2">
+              <div className="avatar">
+                <div className="w-10 h-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                  <img
+                    src={
+                      blog.author?.image ||
+                      "https://ui-avatars.com/api/?name=Anonymous&background=random"
+                    }
+                    alt={blog.author?.name || "Anonymous"}
+                  />
+                </div>
               </div>
+              <span className="text-sm text-gray-500">
+                By {blog.author?.name || "Anonymous"}
+              </span>
             </div>
-            <p className="text-sm text-gray-500">
-              By {blog.user?.name || "Unknown Author"}
-            </p>
-          </div>
+          )}
 
           {blog.blogMedia && (
             <div className="w-full max-h-[500px] overflow-hidden rounded-lg border border-base-300">
