@@ -8,6 +8,7 @@ const NavLinks = ({ onLinkClick }) => {
     { to: "blogs", label: "Blogs" },
     !isAuthenticated && { to: "/", label: "Sign In" },
     isAuthenticated && { to: "writeBlog", label: "Write Blog" },
+    isAuthenticated && { to: "myBlogs", label: "My Blogs" },
     isAuthenticated && { to: "profile", label: "My Profile" },
   ].filter(Boolean);
 

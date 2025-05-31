@@ -23,6 +23,7 @@ const BlogsForms = ({ isEditMode = false, initialData = {} }) => {
   const [errorState, setErrorState] = useState(null);
   const [mediaPreview, setMediaPreview] = useState(null);
   const navigate = useNavigate();
+
   const { token } = useSelector((state) => state.auth);
 
   const { mutate, isPending } = useMutation({
