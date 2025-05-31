@@ -25,6 +25,7 @@ const SignIn = () => {
   const [errorState, setErrorState] = useState(null);
 
   const { mutate, isPending } = useMutation({
+    mutationKey: ["users"],
     mutationFn: (data) =>
       httpRequest({ url: "/user/login", method: "POST", body: data }),
     onSuccess: (responseData) => {
@@ -34,7 +35,7 @@ const SignIn = () => {
           token: responseData.token,
         })
       );
-      navigate("/profile");
+      navigate("/blogs");
     },
     onError: (err) => {
       setErrorState(err?.response?.data?.message || "Something went wrong!");

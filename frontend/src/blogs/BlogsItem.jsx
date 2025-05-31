@@ -6,7 +6,6 @@ import { isVideo } from "../../utils/isVideo";
 const BlogsItem = ({ id, title, description, author, blogMedia }) => {
   return (
     <div className="flex flex-col lg:flex-row bg-base-100 shadow-xl hover:shadow-2xl transition duration-300 rounded-xl overflow-hidden">
-      {/* Fixed Size Media */}
       {blogMedia && (
         <div className="w-full h-48 lg:w-[200px] lg:h-[200px] mx-auto lg:mx-0 flex-shrink-0 overflow-hidden">
           {isVideo(blogMedia) ? (

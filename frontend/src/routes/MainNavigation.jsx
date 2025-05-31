@@ -42,7 +42,7 @@ const MainNavigation = () => {
         </div>
 
         {/* Logo / App Title */}
-        <h1 className="text-xl font-bold text-white">AI Blog</h1>
+        <h1 className="text-xl font-bold text-white">QuickReads.AI</h1>
 
         <nav className="hidden md:flex ml-auto gap-4">
           <NavLinks />

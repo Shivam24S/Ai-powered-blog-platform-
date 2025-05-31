@@ -9,7 +9,7 @@ import Button from "../shared/formElements/Button";
 import InputField from "../shared/formElements/InputField";
 import LoadingSpinner from "../shared/components/LoadingSpinner";
 import ErrorModal from "../shared/components/ErrorModal";
-import { httpRequest } from "../../utils/http";
+import { httpRequest, queryClient } from "../../utils/http";
 import { authActions } from "../store/features/authSlicer";
 import ImageUpload from "../shared/formElements/ImageUpload";
 
@@ -40,6 +40,9 @@ const UserForm = ({ isEditMode = false }) => {
         headers: isEditMode ? { Authorization: `Bearer ${token}` } : {},
       }),
     onSuccess: (responseData) => {
+      if (isEditMode) {
+        queryClient.invalidateQueries("users");
+      }
       dispatch(
         authActions.login({
           user: responseData.user,
@@ -47,7 +50,7 @@ const UserForm = ({ isEditMode = false }) => {
         })
       );
       setTimeout(() => {
-        navigate(isEditMode ? "/profile" : "/profile");
+        navigate(isEditMode ? "/profile" : "/blogs");
       }, 300);
     },
     onError: (err) => {
