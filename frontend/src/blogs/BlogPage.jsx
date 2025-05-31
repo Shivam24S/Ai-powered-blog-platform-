@@ -6,7 +6,7 @@ import LoadingSpinner from "../shared/components/LoadingSpinner";
 import ErrorModal from "../shared/components/ErrorModal";
 import { isVideo } from "../../utils/isVideo";
 import Button from "../shared/formElements/Button";
-import SummaryComponent from "./SummaryComponent"; // Replace with actual path
+import SummaryComponent from "./SummaryComponent";
 
 const BlogDetails = () => {
   const [errorState, setErrorState] = useState(null);
@@ -96,7 +96,7 @@ const BlogDetails = () => {
               className="btn btn-secondary"
               onClick={() => setShowSummary((prev) => !prev)}
             >
-              {showSummary ? "Show Full Description" : "Summarize Description"}
+              {showSummary ? "Show Full Description" : "Summarize Blog"}
             </Button>
           </div>
 

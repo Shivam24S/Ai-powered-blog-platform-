@@ -4,6 +4,11 @@ import Button from "../shared/formElements/Button";
 import { isVideo } from "../../utils/isVideo";
 
 const BlogsItem = ({ id, title, description, author, blogMedia }) => {
+  if (!id) {
+    console.warn("BlogItem missing `id` — skipping render.");
+    return null;
+  }
+
   return (
     <div className="flex flex-col lg:flex-row bg-base-100 shadow-xl hover:shadow-2xl transition duration-300 rounded-xl overflow-hidden">
       {blogMedia && (
@@ -24,6 +29,9 @@ const BlogsItem = ({ id, title, description, author, blogMedia }) => {
               src={blogMedia}
               alt="Blog Media"
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.src = "https://via.placeholder.com/300";
+              }}
             />
           )}
         </div>
@@ -34,11 +42,13 @@ const BlogsItem = ({ id, title, description, author, blogMedia }) => {
         <div>
           <Link to={`/blogDetails/${id}`}>
             <h2 className="text-lg md:text-xl font-semibold text-primary hover:underline">
-              {title}
+              {title || "Untitled Blog"}
             </h2>
           </Link>
 
-          <p className="text-gray-700 mt-2 line-clamp-3">{description}</p>
+          <p className="text-gray-700 mt-2 line-clamp-3">
+            {description || "No description available."}
+          </p>
         </div>
 
         <div className="flex justify-between items-center mt-4 flex-wrap">
@@ -60,10 +70,10 @@ const BlogsItem = ({ id, title, description, author, blogMedia }) => {
             </span>
           </div>
 
-          {/* Read More */}
-          {/* <Link className="btn btn-sm btn-outline btn-primary mt-2 lg:mt-0"></Link> */}
-
-          <Button to={`/blogDetails/${id}`}> Read More</Button>
+          {/* Read More Button using your custom Button */}
+          <Button to={`/blogDetails/${id}`} className="mt-2 lg:mt-0">
+            Read More
+          </Button>
         </div>
       </div>
     </div>
