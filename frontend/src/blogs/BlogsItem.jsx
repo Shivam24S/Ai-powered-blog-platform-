@@ -2,8 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Button from "../shared/formElements/Button";
 import { isVideo } from "../../utils/isVideo";
+import { useSelector } from "react-redux";
 
-const BlogsItem = ({ id, title, description, author, blogMedia }) => {
+const BlogsItem = ({ id, title, description, author, blogMedia, user }) => {
+  const { currentUser } = useSelector((state) => state.auth);
+
   if (!id) {
     console.warn("BlogItem missing `id` — skipping render.");
     return null;
@@ -74,6 +77,14 @@ const BlogsItem = ({ id, title, description, author, blogMedia }) => {
           <Button to={`/blogDetails/${id}`} className="mt-2 lg:mt-0">
             Read More
           </Button>
+          {currentUser && author && currentUser._id === user._id && (
+            <Button
+              to={`/editBlog/${id}`}
+              className="btn-outline btn-secondary"
+            >
+              Edit Blog
+            </Button>
+          )}
         </div>
       </div>
     </div>

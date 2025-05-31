@@ -12,6 +12,7 @@ const BlogsList = ({ blogs = [] }) => {
           description={blog.description}
           author={blog.user}
           blogMedia={blog.blogMedia}
+          user={blog.user}
         />
       ))}
     </div>

@@ -1,23 +1,31 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 
 import { httpRequest } from "../../utils/http";
 import BlogsList from "./BlogsList";
 import ErrorModal from "../shared/components/ErrorModal";
 import LoadingSpinner from "../shared/components/LoadingSpinner";
 
-const Blogs = () => {
+const Blogs = ({ userBlog = false }) => {
   const [errorState, setErrorState] = useState(null);
+  const { token } = useSelector((state) => state.auth);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["blog"],
-    queryFn: () => httpRequest({ url: "/blog/blogs" }),
+    queryKey: ["blog", userBlog],
+    queryFn: () =>
+      httpRequest({
+        url: userBlog ? "/blog/userBlogs" : "/blog/blogs",
+        method: "GET",
+        headers: {
+          Authorization: userBlog ? `Bearer ${token}` : "",
+        },
+      }),
+    enabled: userBlog ? !!token : true,
     onError: (err) => {
       setErrorState(err?.response?.data?.message || "Something went wrong!");
     },
   });
-
-  console.log(data);
 
   let content;
 
@@ -26,12 +34,14 @@ const Blogs = () => {
   } else if (errorState) {
     content = <ErrorModal message={errorState} />;
   } else if (data) {
-    content = <BlogsList blogs={data.blogs} />;
+    content = <BlogsList blogs={data.blogs || []} />;
   }
 
   return (
     <div className="p-4 md:p-8 lg:p-12 max-w-5xl mx-auto">
-      <h1 className="text-4xl font-bold text-center mb-10">Latest Blogs</h1>
+      <h1 className="text-4xl font-bold text-center mb-10">
+        {userBlog ? "My Blogs" : "Latest Blogs"}{" "}
+      </h1>
       {content}
     </div>
   );
