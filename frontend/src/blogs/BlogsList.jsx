@@ -1,7 +1,7 @@
 import React from "react";
 import BlogsItem from "./BlogsItem";
 
-const BlogsList = ({ blogs }) => {
+const BlogsList = ({ blogs = [] }) => {
   return blogs.length > 0 ? (
     <div className="grid gap-6">
       {blogs.map((blog) => (

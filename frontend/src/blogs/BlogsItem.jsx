@@ -11,6 +11,7 @@ const BlogsItem = ({ id, title, description, author, blogMedia }) => {
           {isVideo(blogMedia) ? (
             <video
               src={blogMedia}
+              type="video/mp4"
               controls
               muted
               loop
@@ -31,7 +32,7 @@ const BlogsItem = ({ id, title, description, author, blogMedia }) => {
       {/* Text Content */}
       <div className="p-4 lg:p-6 flex flex-col justify-between w-full">
         <div>
-          <Link to={`/blogs/${id}`}>
+          <Link to={`/blogDetails/${id}`}>
             <h2 className="text-lg md:text-xl font-semibold text-primary hover:underline">
               {title}
             </h2>
@@ -62,7 +63,7 @@ const BlogsItem = ({ id, title, description, author, blogMedia }) => {
           {/* Read More */}
           {/* <Link className="btn btn-sm btn-outline btn-primary mt-2 lg:mt-0"></Link> */}
 
-          <Button to={`/blogs/${id}`}> Read More</Button>
+          <Button to={`/blogDetails/${id}`}> Read More</Button>
         </div>
       </div>
     </div>

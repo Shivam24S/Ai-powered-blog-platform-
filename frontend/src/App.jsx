@@ -9,6 +9,7 @@ import { queryClient } from "../utils/http";
 import User from "./users/User";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 import ErrorElement from "./routes/ErrorElement";
+import BlogDetails from "./blogs/BlogPage";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -44,6 +45,10 @@ const App = () => {
               <UserForm isEditMode={true} />
             </ProtectedRoute>
           ),
+        },
+        {
+          path: "blogDetails/:id",
+          element: <BlogDetails />,
         },
       ],
     },
