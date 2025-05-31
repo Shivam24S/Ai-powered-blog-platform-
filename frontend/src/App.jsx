@@ -10,6 +10,7 @@ import User from "./users/User";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 import ErrorElement from "./routes/ErrorElement";
 import BlogDetails from "./blogs/BlogPage";
+import BlogsForms from "./blogs/BlogsForms";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -50,6 +51,14 @@ const App = () => {
           path: "blogDetails/:id",
           element: <BlogDetails />,
         },
+        {
+          path: "writeBlog",
+          element: <BlogsForms />,
+        },
+        // {
+        //   path: "editBlog",
+        //   element: <BlogsForms isEditMode={true} initialData={blogData} />,
+        // },
       ],
     },
   ]);
