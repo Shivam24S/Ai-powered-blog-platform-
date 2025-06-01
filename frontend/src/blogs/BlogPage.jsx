@@ -13,7 +13,7 @@ const BlogDetails = () => {
   const [errorState, setErrorState] = useState(null);
   const [showSummary, setShowSummary] = useState(false);
 
-  const { currentUser } = useSelector((state) => state.auth);
+  const { currentUser } = useSelector((state) => state.auth) || {};
 
   const { id } = useParams();
 
@@ -54,7 +54,7 @@ const BlogDetails = () => {
             {blog?.title || "Untitled Blog"}
           </h2>
 
-          {currentUser.id !== blog.user && (
+          {(!currentUser || currentUser.id !== blog.user) && (
             <div className="flex items-center gap-3 mt-2">
               <div className="avatar">
                 <div className="w-10 h-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">

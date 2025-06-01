@@ -1,13 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
-import { isVideo } from "../../../utils/isVideo";
 
 const FileUpload = ({ name, id, placeholder, onFileSelect, previewUrl }) => {
   const [filePreview, setFilePreview] = useState(null);
+  const [fileType, setFileType] = useState(null);
   const inputRef = useRef();
 
   useEffect(() => {
     if (previewUrl) {
       setFilePreview(previewUrl);
+
+      const ext = previewUrl.split(".").pop().toLowerCase();
+      if (["mp4", "webm", "ogg"].includes(ext)) {
+        setFileType(`video/${ext}`);
+      } else {
+        setFileType("image");
+      }
     }
   }, [previewUrl]);
 
@@ -16,6 +23,7 @@ const FileUpload = ({ name, id, placeholder, onFileSelect, previewUrl }) => {
     if (file) {
       const fileUrl = URL.createObjectURL(file);
       setFilePreview(fileUrl);
+      setFileType(file.type);
       onFileSelect(file);
     }
   };
@@ -30,7 +38,7 @@ const FileUpload = ({ name, id, placeholder, onFileSelect, previewUrl }) => {
         type="file"
         name={name}
         id={id}
-        accept="image/*, video/*"
+        accept="image/*,video/*"
         ref={inputRef}
         onChange={handleFile}
         className="hidden"
@@ -41,7 +49,7 @@ const FileUpload = ({ name, id, placeholder, onFileSelect, previewUrl }) => {
         className="w-full h-48 flex items-center justify-center border-2 border-dashed border-base-300 rounded-lg cursor-pointer bg-base-200 hover:border-primary transition duration-200 overflow-hidden"
       >
         {filePreview ? (
-          isVideo(filePreview) ? (
+          fileType?.startsWith("video/") ? (
             <video
               src={filePreview}
               controls

@@ -53,15 +53,27 @@ const App = () => {
         },
         {
           path: "writeBlog",
-          element: <BlogsForms />,
+          element: (
+            <ProtectedRoute>
+              <BlogsForms />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "myBlogs",
-          element: <Blogs userBlog={true} />,
+          element: (
+            <ProtectedRoute>
+              <Blogs userBlog={true} />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "editBlog/:id",
-          element: <BlogsForms isEditMode={true} />,
+          element: (
+            <ProtectedRoute>
+              <BlogsForms isEditMode={true} />
+            </ProtectedRoute>
+          ),
         },
       ],
     },

@@ -91,7 +91,7 @@ const UserForm = ({ isEditMode = false }) => {
           {({ setFieldValue }) => (
             <Form className="space-y-4">
               <div className="flex justify-center">
-                <ImageUpload
+                <FileUpload
                   name="profilePic"
                   id="profilePic"
                   placeholder="Click to upload profile picture"
