@@ -59,10 +59,10 @@ const App = () => {
           path: "myBlogs",
           element: <Blogs userBlog={true} />,
         },
-        // {
-        //   path: "editBlog/:id",
-        //   element: <BlogsForms isEditMode={true} />,
-        // },
+        {
+          path: "editBlog/:id",
+          element: <BlogsForms isEditMode={true} />,
+        },
       ],
     },
   ]);

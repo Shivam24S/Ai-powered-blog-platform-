@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import InputField from "../shared/formElements/InputField";
 import Button from "../shared/formElements/Button";
 import LoadingSpinner from "../shared/components/LoadingSpinner";
 import ErrorModal from "../shared/components/ErrorModal";
+import ImageUpload from "../shared/formElements/FileUpload"; // your component
 import { httpRequest, queryClient } from "../../utils/http";
 
 const BlogsFormSchema = Yup.object().shape({
@@ -19,17 +20,27 @@ const BlogsFormSchema = Yup.object().shape({
   blogMedia: Yup.mixed().nullable(),
 });
 
-const BlogsForms = ({ isEditMode = false, initialData = {} }) => {
+const BlogsForms = ({ isEditMode = false }) => {
   const [errorState, setErrorState] = useState(null);
-  const [mediaPreview, setMediaPreview] = useState(null);
-  const navigate = useNavigate();
+  const [mediaPreviewUrl, setMediaPreviewUrl] = useState(null);
 
+  const { id: blogId } = useParams();
+  const navigate = useNavigate();
   const { token } = useSelector((state) => state.auth);
+
+  const { data: initialData, isLoading } = useQuery({
+    queryKey: ["blog", blogId],
+    queryFn: () => httpRequest({ url: `/blog/${blogId}` }),
+    enabled: isEditMode && !!blogId,
+    onError: (err) => {
+      setErrorState(err?.response?.data?.message || "Something went wrong!");
+    },
+  });
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (formData) =>
       httpRequest({
-        url: isEditMode ? `/blog/${initialData?._id}` : "/blog/addBlog",
+        url: isEditMode ? `/blog/${blogId}` : "/blog/addBlog",
         method: isEditMode ? "PATCH" : "POST",
         body: formData,
         headers: { Authorization: `Bearer ${token}` },
@@ -43,12 +54,19 @@ const BlogsForms = ({ isEditMode = false, initialData = {} }) => {
     },
   });
 
-  const handleMediaPreview = (file) => {
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setMediaPreview({ url, type: file.type });
+  useEffect(() => {
+    if (isEditMode && initialData?.blogMedia) {
+      setMediaPreviewUrl(initialData.blogMedia);
     }
-  };
+  }, [initialData, isEditMode]);
+
+  if (isEditMode && isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingSpinner loadingText="Loading blog details..." />
+      </div>
+    );
+  }
 
   return (
     <section className="flex justify-center items-center min-h-screen bg-base-200 px-4 relative">
@@ -60,7 +78,7 @@ const BlogsForms = ({ isEditMode = false, initialData = {} }) => {
         <Formik
           enableReinitialize
           initialValues={{
-            blogMedia: initialData.blogMedia || "",
+            blogMedia: "",
             title: initialData?.title || "",
             description: initialData?.description || "",
           }}
@@ -73,7 +91,9 @@ const BlogsForms = ({ isEditMode = false, initialData = {} }) => {
             formData.append("description", values.description);
 
             mutate(formData, {
-              onError: () => resetForm(),
+              onError: () => {
+                if (!isEditMode) resetForm();
+              },
               onSettled: () => setSubmitting(false),
             });
           }}
@@ -84,15 +104,16 @@ const BlogsForms = ({ isEditMode = false, initialData = {} }) => {
                 <label className="block font-semibold mb-1 text-gray-700">
                   Upload Blog Media (Image or Video)
                 </label>
-                <input
-                  type="file"
-                  accept="image/*,video/*"
-                  onChange={(event) => {
-                    const file = event.currentTarget.files[0];
+                <ImageUpload
+                  name="blogMedia"
+                  id="blogMedia"
+                  placeholder="Click to upload image or video"
+                  onFileSelect={(file) => {
                     setFieldValue("blogMedia", file);
-                    handleMediaPreview(file);
+
+                    if (file) setMediaPreviewUrl(null);
                   }}
-                  className="file-input file-input-bordered w-full"
+                  previewUrl={isEditMode ? mediaPreviewUrl : null}
                 />
                 <ErrorMessage
                   name="blogMedia"
@@ -100,24 +121,6 @@ const BlogsForms = ({ isEditMode = false, initialData = {} }) => {
                   className="text-sm text-error mt-1"
                 />
               </div>
-
-              {mediaPreview && (
-                <div className="w-full border rounded-xl p-2">
-                  {mediaPreview.type.startsWith("image") ? (
-                    <img
-                      src={mediaPreview.url}
-                      alt="Preview"
-                      className="w-full max-h-64 object-contain rounded"
-                    />
-                  ) : (
-                    <video
-                      controls
-                      src={mediaPreview.url}
-                      className="w-full max-h-64 object-contain rounded"
-                    />
-                  )}
-                </div>
-              )}
 
               <InputField
                 label="Title"
@@ -178,7 +181,7 @@ const BlogsForms = ({ isEditMode = false, initialData = {} }) => {
       )}
 
       {errorState && (
-        <ErrorModal error={errorState} onClear={() => setErrorState(null)} />
+        <ErrorModal message={errorState} onClear={() => setErrorState(null)} />
       )}
     </section>
   );

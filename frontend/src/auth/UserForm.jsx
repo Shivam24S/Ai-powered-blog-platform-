@@ -11,7 +11,7 @@ import LoadingSpinner from "../shared/components/LoadingSpinner";
 import ErrorModal from "../shared/components/ErrorModal";
 import { httpRequest, queryClient } from "../../utils/http";
 import { authActions } from "../store/features/authSlicer";
-import ImageUpload from "../shared/formElements/ImageUpload";
+import FileUpload from "../shared/formElements/FileUpload";
 
 const UserFormSchema = Yup.object().shape({
   name: Yup.string().min(2, "Too Short!").required("Name is required"),
@@ -96,7 +96,7 @@ const UserForm = ({ isEditMode = false }) => {
                   id="profilePic"
                   placeholder="Click to upload profile picture"
                   previewUrl={isEditMode ? user?.profilePic : null}
-                  onImageSelect={(file) => setFieldValue("profilePic", file)}
+                  onFileSelect={(file) => setFieldValue("profilePic", file)}
                 />
               </div>
               <ErrorMessage
