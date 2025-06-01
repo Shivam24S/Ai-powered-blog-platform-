@@ -67,6 +67,19 @@ const blogs = async (req, res, next) => {
   }
 };
 
+const allBlogs = async (req, res, next) => {
+  try {
+    const blogs = await Blog.find({});
+
+    if (!blogs) {
+      return next(new HttpError("No Blog data available", 404));
+    }
+    res.status(200).json({ blogs });
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
+  }
+};
+
 const updateBlog = async (req, res, next) => {
   try {
     const requestedUser = req.user;
@@ -200,4 +213,5 @@ export default {
   getBlog,
   summarizeBlog,
   userBlogs,
+  allBlogs,
 };

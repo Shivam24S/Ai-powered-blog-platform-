@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
-import SignIn from "./SignIn";
-import UserForm from "./UserForm"; //
+import SignIn from "./Signin";
+import UserForm from "./UserForm";
 
 const Auth = () => {
   const isLoginMode = useSelector((state) => state.auth.isLoginMode);
