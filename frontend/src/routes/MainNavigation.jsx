@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import MainHeader from "./MainHeader";
 import NavLinks from "./NavLinks";
 import { useState } from "react";
@@ -10,7 +10,6 @@ const MainNavigation = () => {
   return (
     <>
       <MainHeader>
-        {/* Mobile hamburger menu - shown only on mobile */}
         <div className="md:hidden">
           <button
             className="btn btn-ghost btn-square"
@@ -41,8 +40,9 @@ const MainNavigation = () => {
           </SideDrawer>
         </div>
 
-        {/* Logo / App Title */}
-        <h1 className="text-xl font-bold text-white">QuickReads.AI</h1>
+        <Link to="/blogs">
+          <h1 className="text-xl font-bold text-white">QuickReads.AI</h1>
+        </Link>
 
         <nav className="hidden md:flex ml-auto gap-4">
           <NavLinks />
