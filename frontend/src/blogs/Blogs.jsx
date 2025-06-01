@@ -6,19 +6,26 @@ import { httpRequest } from "../../utils/http";
 import BlogsList from "./BlogsList";
 import ErrorModal from "../shared/components/ErrorModal";
 import LoadingSpinner from "../shared/components/LoadingSpinner";
+import Button from "../shared/formElements/Button";
 
 const Blogs = ({ userBlog = false }) => {
   const [errorState, setErrorState] = useState(null);
   const { token } = useSelector((state) => state.auth);
 
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
   const { data, isLoading } = useQuery({
     queryKey: ["blog", userBlog],
     queryFn: () =>
       httpRequest({
-        url: userBlog ? "/blog/userBlogs" : "/blog/blogs",
+        url: userBlog
+          ? "/blog/userBlogs"
+          : isAuthenticated
+          ? "/blog/allBlogs"
+          : "/blog/blogs",
         method: "GET",
         headers: {
-          Authorization: userBlog ? `Bearer ${token}` : "",
+          Authorization: userBlog || isAuthenticated ? `Bearer ${token}` : "",
         },
       }),
     enabled: userBlog ? !!token : true,
@@ -43,6 +50,18 @@ const Blogs = ({ userBlog = false }) => {
         {userBlog ? "My Blogs" : "Latest Blogs"}{" "}
       </h1>
       {content}
+
+      {!isAuthenticated && (
+        <div className="flex justify-center items-center mt-8 px-4">
+          <Button
+            className="w-full max-w-xs sm:max-w-sm md:max-w-md px-6 py-3 text-sm sm:text-base bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition duration-200"
+            type="button"
+            to="/"
+          >
+            Explore More
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
