@@ -51,7 +51,7 @@ const Blogs = ({ userBlog = false }) => {
       </h1>
       {content}
 
-      {!isAuthenticated && (
+      {!isAuthenticated && !isLoading && (
         <div className="flex justify-center items-center mt-8 px-4">
           <Button
             className="w-full max-w-xs sm:max-w-sm md:max-w-md px-6 py-3 text-sm sm:text-base bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition duration-200"

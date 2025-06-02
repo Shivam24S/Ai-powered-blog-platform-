@@ -14,6 +14,8 @@ const BlogsItem = ({
 }) => {
   const { currentUser } = useSelector((state) => state.auth);
 
+  console.log("current user", currentUser);
+
   if (!id) {
     console.warn("BlogItem missing `id` — skipping render.");
     return null;

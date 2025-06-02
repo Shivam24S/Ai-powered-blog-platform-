@@ -155,6 +155,28 @@ const deleteAllUser = async (req, res, next) => {
   }
 };
 
+const userProfilePic = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return next(new HttpError("user not found", 404));
+    }
+
+    const userProfilePic = user.profilePic;
+
+    if (!userProfilePic) {
+      return next(new HttpError("user profile pic not found", 404));
+    }
+
+    return res.status(200).json(userProfilePic);
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
+  }
+};
+
 // login user
 
 const login = async (req, res, next) => {
@@ -211,4 +233,5 @@ export default {
   login,
   logout,
   logoutAllSession,
+  userProfilePic,
 };
