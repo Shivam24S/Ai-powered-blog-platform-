@@ -3,18 +3,20 @@ import { Link } from "react-router-dom";
 import Button from "../shared/formElements/Button";
 import { isVideo } from "../../utils/isVideo";
 import { useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
+import { httpRequest } from "../../utils/http";
 
-const BlogsItem = ({
-  id,
-  title,
-  description,
-  author,
-  blogMedia,
-  user: userId,
-}) => {
+const BlogsItem = ({ id, title, description, blogMedia, user: userId }) => {
+  const { data: BlogAuthor } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => httpRequest({ url: `/user/profilePic/${userId}` }),
+    enabled: !!userId,
+  });
+
+  console.log("user Id", userId);
+  console.log("blog author", BlogAuthor);
+
   const { currentUser } = useSelector((state) => state.auth);
-
-  console.log("current user", currentUser);
 
   if (!id) {
     console.warn("BlogItem missing `id` — skipping render.");
@@ -49,7 +51,6 @@ const BlogsItem = ({
         </div>
       )}
 
-      {/* Text Content */}
       <div className="p-4 lg:p-6 flex flex-col justify-between w-full">
         <div>
           <Link to={`/blogDetails/${id}`}>
@@ -64,21 +65,21 @@ const BlogsItem = ({
         </div>
 
         <div className="flex justify-between items-center mt-4 flex-wrap">
-          {(!currentUser || currentUser.id !== userId) && author && (
+          {(!currentUser || currentUser.id !== userId) && BlogAuthor && (
             <div className="flex items-center gap-3">
               <div className="avatar">
                 <div className="w-8 h-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                   <img
                     src={
-                      author?.image ||
+                      BlogAuthor?.profilePic ||
                       "https://ui-avatars.com/api/?name=Anonymous&background=random"
                     }
-                    alt={author?.name || "Anonymous"}
+                    alt={BlogAuthor?.name || "Anonymous"}
                   />
                 </div>
               </div>
               <span className="text-sm text-gray-500">
-                By {author?.name || "Anonymous"}
+                By {BlogAuthor?.name || "Anonymous"}
               </span>
             </div>
           )}

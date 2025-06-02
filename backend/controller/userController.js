@@ -165,13 +165,14 @@ const userProfilePic = async (req, res, next) => {
       return next(new HttpError("user not found", 404));
     }
 
-    const userProfilePic = user.profilePic;
+    const name = user.name;
+    const profilePic = user.profilePic;
 
     if (!userProfilePic) {
       return next(new HttpError("user profile pic not found", 404));
     }
 
-    return res.status(200).json(userProfilePic);
+    return res.status(200).json({ message: "user Details", name, profilePic });
   } catch (error) {
     return next(new HttpError(error.message, 500));
   }
