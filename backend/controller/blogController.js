@@ -80,10 +80,12 @@ const blogs = async (req, res, next) => {
 
 const allBlogs = async (req, res, next) => {
   try {
-    const blogs = await Blog.find({}).populate({
-      path: "user",
-      select: "name profilePic",
-    });
+    const blogs = await Blog.find({})
+      .populate({
+        path: "user",
+        select: "name profilePic",
+      })
+      .sort({ createdAt: -1 });
 
     if (!blogs) {
       return next(new HttpError("No Blog data available", 404));

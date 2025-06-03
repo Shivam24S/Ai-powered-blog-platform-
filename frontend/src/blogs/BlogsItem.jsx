@@ -3,19 +3,8 @@ import { Link } from "react-router-dom";
 import Button from "../shared/formElements/Button";
 import { isVideo } from "../../utils/isVideo";
 import { useSelector } from "react-redux";
-import { useQuery } from "@tanstack/react-query";
-import { httpRequest } from "../../utils/http";
 
-const BlogsItem = ({ id, title, description, blogMedia, user: userId }) => {
-  const { data: BlogAuthor } = useQuery({
-    queryKey: ["user", userId],
-    queryFn: () => httpRequest({ url: `/user/profilePic/${userId}` }),
-    enabled: !!userId,
-  });
-
-  console.log("user Id", userId);
-  console.log("blog author", BlogAuthor);
-
+const BlogsItem = ({ id, title, description, blogMedia, user }) => {
   const { currentUser } = useSelector((state) => state.auth);
 
   if (!id) {
@@ -65,21 +54,21 @@ const BlogsItem = ({ id, title, description, blogMedia, user: userId }) => {
         </div>
 
         <div className="flex justify-between items-center mt-4 flex-wrap">
-          {(!currentUser || currentUser.id !== userId) && BlogAuthor && (
+          {(!currentUser || currentUser.id !== user.id) && (
             <div className="flex items-center gap-3">
               <div className="avatar">
                 <div className="w-8 h-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                   <img
                     src={
-                      BlogAuthor?.profilePic ||
+                      user?.profilePic ||
                       "https://ui-avatars.com/api/?name=Anonymous&background=random"
                     }
-                    alt={BlogAuthor?.name || "Anonymous"}
+                    alt={user?.name || "Anonymous"}
                   />
                 </div>
               </div>
               <span className="text-sm text-gray-500">
-                By {BlogAuthor?.name || "Anonymous"}
+                By {user?.name || "Anonymous"}
               </span>
             </div>
           )}
@@ -88,7 +77,7 @@ const BlogsItem = ({ id, title, description, blogMedia, user: userId }) => {
             <Button to={`/blogDetails/${id}`} className="btn-sm">
               Read More
             </Button>
-            {currentUser && userId && currentUser.id === userId && (
+            {currentUser && user.id && currentUser.id === user.id && (
               <Button
                 to={`/editBlog/${id}`}
                 className="btn-sm btn-outline btn-secondary"
