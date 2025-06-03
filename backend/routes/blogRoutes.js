@@ -31,6 +31,8 @@ router.patch(
   blogController.updateBlog
 );
 
+router.get("/userBlogs", auth, blogController.userBlogs);
+
 router.delete("/:id", auth, blogController.deleteBlog);
 
 router.get("/:id", blogController.getBlog);

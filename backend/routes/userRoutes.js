@@ -54,6 +54,4 @@ router.post("/logout", auth, userController.logout);
 
 router.post("/logoutAllSession", auth, userController.logoutAllSession);
 
-router.get("/profilePic/:id", userController.userProfilePic);
-
 export default router;

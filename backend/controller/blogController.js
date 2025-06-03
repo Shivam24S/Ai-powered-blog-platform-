@@ -52,11 +52,6 @@ const addBlog = async (req, res, next) => {
 
 const blogs = async (req, res, next) => {
   try {
-    // const blogs = await Blog.find({})
-    //   .populate("user", "name", "profilePic")
-    //   .sort({ createdAt: -1 })
-    //   .limit(6);
-
     const blogs = await Blog.find()
       .populate({
         path: "user",
@@ -185,6 +180,22 @@ const deleteBlog = async (req, res, next) => {
   });
   res.status(200).json({ message: "blog deleted successfully" });
 };
+const userBlogs = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).populate("Blogs");
+
+    if (!user || !user.Blogs || user.Blogs.length === 0) {
+      return next(new HttpError("No Blogs Data found", 404));
+    }
+
+    res.status(200).json({
+      message: "User's blogs fetched successfully",
+      blogs: user.Blogs,
+    });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
 
 const summarizeBlog = async (req, res, next) => {
   try {
@@ -210,6 +221,7 @@ export default {
   updateBlog,
   deleteBlog,
   getBlog,
+  userBlogs,
   summarizeBlog,
   allBlogs,
 };

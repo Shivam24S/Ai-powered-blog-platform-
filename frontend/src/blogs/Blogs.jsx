@@ -44,14 +44,23 @@ const Blogs = ({ userBlog = false }) => {
     content = <BlogsList blogs={data.blogs || []} />;
   }
 
+  console.log("data", data);
+
   return (
     <div className="p-4 md:p-8 lg:p-12 max-w-5xl mx-auto">
       <h1 className="text-4xl font-bold text-center mb-10">
         {userBlog ? "My Blogs" : "Latest Blogs"}{" "}
       </h1>
 
-      {Array.isArray(data?.blogs) && data.blogs.length === 0 ? (
-        <p>No Blog Data Found</p>
+      {!data?.blogs && !isLoading ? (
+        <div className="flex justify-center items-center min-h-[200px]">
+          <div className="bg-base-200 text-base-content p-6 rounded-xl shadow-md text-center w-full max-w-md">
+            <h2 className="text-lg font-semibold">No Blogs Found</h2>
+            <p className="text-sm text-gray-500 mt-2">
+              Looks like there are no blogs available right now.
+            </p>
+          </div>
+        </div>
       ) : (
         content
       )}
