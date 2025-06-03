@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 
 import MainNavigation from "./routes/MainNavigation";
@@ -19,6 +23,10 @@ const App = () => {
       element: <MainNavigation />,
       errorElement: <ErrorElement />,
       children: [
+        {
+          path: "*",
+          element: <Navigate to="/" replace />,
+        },
         {
           index: true,
           element: <Auth />,

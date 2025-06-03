@@ -49,7 +49,12 @@ const Blogs = ({ userBlog = false }) => {
       <h1 className="text-4xl font-bold text-center mb-10">
         {userBlog ? "My Blogs" : "Latest Blogs"}{" "}
       </h1>
-      {content}
+
+      {Array.isArray(data?.blogs) && data.blogs.length === 0 ? (
+        <p>No Blog Data Found</p>
+      ) : (
+        content
+      )}
 
       {!isAuthenticated && !isLoading && (
         <div className="flex justify-center items-center mt-8 px-4">
