@@ -3,9 +3,11 @@ import cors from "cors";
 import HttpError from "./middlewares/errorHandler.js";
 import userRoutes from "./routes/userRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
+import helmet from "helmet";
 
 const app = express();
 
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
