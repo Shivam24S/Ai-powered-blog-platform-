@@ -41,7 +41,7 @@ const Blogs = ({ userBlog = false }) => {
   } else if (errorState) {
     content = <ErrorModal message={errorState} />;
   } else if (data) {
-    content = <BlogsList blogs={data.blogs || []} />;
+    content = <BlogsList blogs={data.blogs || []} userBlog={userBlog} />;
   }
 
   console.log("data", data);

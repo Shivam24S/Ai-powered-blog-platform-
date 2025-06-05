@@ -4,13 +4,19 @@ import Button from "../shared/formElements/Button";
 import { isVideo } from "../../utils/isVideo";
 import { useSelector } from "react-redux";
 
-const BlogsItem = ({ id, title, description, blogMedia, user }) => {
+const BlogsItem = ({ id, title, description, blogMedia, user, userBlog }) => {
   const { currentUser } = useSelector((state) => state.auth);
 
   if (!id) {
     console.warn("BlogItem missing `id` — skipping render.");
     return null;
   }
+
+  console.log("userBlog", userBlog);
+
+  console.log("current user", currentUser);
+
+  console.log("blog user", user);
 
   return (
     <div className="flex flex-col lg:flex-row bg-base-100 shadow-xl hover:shadow-2xl transition duration-300 rounded-xl overflow-hidden">
@@ -54,7 +60,7 @@ const BlogsItem = ({ id, title, description, blogMedia, user }) => {
         </div>
 
         <div className="flex justify-between items-center mt-4 flex-wrap">
-          {(!currentUser || currentUser.id !== user.id) && (
+          {((userBlog && !currentUser) || currentUser.id !== user) && (
             <div className="flex items-center gap-3">
               <div className="avatar">
                 <div className="w-8 h-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
@@ -77,7 +83,7 @@ const BlogsItem = ({ id, title, description, blogMedia, user }) => {
             <Button to={`/blogDetails/${id}`} className="btn-sm">
               Read More
             </Button>
-            {currentUser && user.id && currentUser.id === user.id && (
+            {userBlog && currentUser.id === user && (
               <Button
                 to={`/editBlog/${id}`}
                 className="btn-sm btn-outline btn-secondary"
