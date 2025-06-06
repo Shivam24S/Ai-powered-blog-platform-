@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../shared/formElements/Button";
 import { isVideo } from "../../utils/isVideo";
 import { useSelector } from "react-redux";
+import Modal from "../shared/components/Modal";
 
 const BlogsItem = ({ id, title, description, blogMedia, user, userBlog }) => {
+  const [showModal, setShowModal] = useState(false);
+
   const { currentUser } = useSelector((state) => state.auth);
 
   if (!id) {
@@ -84,14 +87,22 @@ const BlogsItem = ({ id, title, description, blogMedia, user, userBlog }) => {
               Read More
             </Button>
             {userBlog && currentUser.id === user && (
-              <Button
-                to={`/editBlog/${id}`}
-                className="btn-sm btn-outline btn-secondary"
-              >
-                Edit Blog
-              </Button>
+              <>
+                <Button
+                  to={`/editBlog/${id}`}
+                  className="btn-sm btn-outline btn-secondary"
+                >
+                  Edit Blog
+                </Button>
+                <Button onClick={() => setShowModal(true)}>Delete</Button>
+              </>
             )}
           </div>
+          <Modal
+            show={showModal}
+            header={"are you sure ?"}
+            onCancel={() => setShowModal(false)}
+          />
         </div>
       </div>
     </div>
