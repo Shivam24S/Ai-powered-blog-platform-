@@ -1,14 +1,35 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../shared/formElements/Button";
 import { isVideo } from "../../utils/isVideo";
 import { useSelector } from "react-redux";
 import Modal from "../shared/components/Modal";
+import { useMutation } from "@tanstack/react-query";
+import { httpRequest, queryClient } from "../../utils/http";
 
 const BlogsItem = ({ id, title, description, blogMedia, user, userBlog }) => {
   const [showModal, setShowModal] = useState(false);
 
-  const { currentUser } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  const { currentUser, token } = useSelector((state) => state.auth);
+
+  const { mutate } = useMutation({
+    mutationFn: () =>
+      httpRequest({
+        url: `/blog/${id}`,
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["blog", userBlog]);
+      setShowModal(false);
+      navigate("/myBlogs");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   if (!id) {
     console.warn("BlogItem missing `id` — skipping render.");
@@ -94,9 +115,17 @@ const BlogsItem = ({ id, title, description, blogMedia, user, userBlog }) => {
           </div>
           <Modal
             show={showModal}
-            header={"are you sure ?"}
+            header={"Are you sure ?"}
             onCancel={() => setShowModal(false)}
-          />
+            footer={
+              <>
+                <Button onClick={() => mutate(id)}>Yes</Button>
+                <Button onClick={() => setShowModal(false)}>Cancel</Button>
+              </>
+            }
+          >
+            <p>Do you really want to delete this blog ?</p>
+          </Modal>
         </div>
       </div>
     </div>

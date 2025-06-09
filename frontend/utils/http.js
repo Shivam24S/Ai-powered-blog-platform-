@@ -5,6 +5,8 @@ export const queryClient = new QueryClient();
 
 const SERVER_BASE_URL = import.meta.env.VITE_BACKEND_SERVER_API_URL;
 
+console.log("SERVER_BASE_URL", SERVER_BASE_URL);
+
 export const httpRequest = async ({
   url,
   method = "GET",
