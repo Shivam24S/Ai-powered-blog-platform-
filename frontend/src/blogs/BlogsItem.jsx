@@ -15,12 +15,6 @@ const BlogsItem = ({ id, title, description, blogMedia, user, userBlog }) => {
     return null;
   }
 
-  console.log("userBlog", userBlog);
-
-  console.log("current user", currentUser);
-
-  console.log("blog user", user);
-
   return (
     <div className="flex flex-col lg:flex-row bg-base-100 shadow-xl hover:shadow-2xl transition duration-300 rounded-xl overflow-hidden">
       {blogMedia && (

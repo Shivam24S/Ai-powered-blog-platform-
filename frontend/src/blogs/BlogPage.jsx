@@ -60,15 +60,15 @@ const BlogDetails = () => {
                 <div className="w-10 h-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                   <img
                     src={
-                      blog.author?.image ||
+                      blog.user?.profilePic ||
                       "https://ui-avatars.com/api/?name=Anonymous&background=random"
                     }
-                    alt={blog.author?.name || "Anonymous"}
+                    alt={blog.user?.name || "Anonymous"}
                   />
                 </div>
               </div>
               <span className="text-sm text-gray-500">
-                By {blog.author?.name || "Anonymous"}
+                By {blog.user?.name || "Anonymous"}
               </span>
             </div>
           )}
