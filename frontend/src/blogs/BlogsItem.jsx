@@ -63,7 +63,7 @@ const BlogsItem = ({ id, title, description, blogMedia, user, userBlog }) => {
         </div>
 
         <div className="flex justify-between items-center mt-4 flex-wrap">
-          {((userBlog && !currentUser) || currentUser !== user) && (
+          {!userBlog && currentUser?.id !== user?.id && (
             <div className="flex items-center gap-3">
               <div className="avatar">
                 <div className="w-8 h-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
