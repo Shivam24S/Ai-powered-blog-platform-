@@ -50,6 +50,7 @@ const SummaryComponent = ({ blogId }) => {
     return (
       <ErrorModal
         message={errorState || "Something went wrong generating summary."}
+        onClear={() => setErrorState(null)}
       />
     );
   }

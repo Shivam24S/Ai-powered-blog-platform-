@@ -6,15 +6,17 @@ import { useSelector } from "react-redux";
 import Modal from "../shared/components/Modal";
 import { useMutation } from "@tanstack/react-query";
 import { httpRequest, queryClient } from "../../utils/http";
+import ErrorModal from "../shared/components/ErrorModal";
 
 const BlogsItem = ({ id, title, description, blogMedia, user, userBlog }) => {
   const [showModal, setShowModal] = useState(false);
 
+  const [errorState, setErrorState] = useState(null);
   const navigate = useNavigate();
 
   const { currentUser, token } = useSelector((state) => state.auth);
 
-  const { mutate } = useMutation({
+  const { mutate, isError } = useMutation({
     mutationFn: () =>
       httpRequest({
         url: `/blog/${id}`,
@@ -24,16 +26,27 @@ const BlogsItem = ({ id, title, description, blogMedia, user, userBlog }) => {
     onSuccess: () => {
       queryClient.invalidateQueries(["blog", userBlog]);
       setShowModal(false);
-      navigate("/myBlogs");
+      navigate("/auth");
     },
-    onError: (error) => {
-      console.log(error);
+    onError: (err) => {
+      setErrorState(
+        err?.response?.data?.message || "Failed to generate summary"
+      );
     },
   });
 
   if (!id) {
     console.warn("BlogItem missing `id` — skipping render.");
     return null;
+  }
+
+  if (isError || errorState) {
+    return (
+      <ErrorModal
+        message={errorState || "Something went wrong generating summary."}
+        onClear={() => setErrorState(null)}
+      />
+    );
   }
 
   return (
@@ -109,7 +122,12 @@ const BlogsItem = ({ id, title, description, blogMedia, user, userBlog }) => {
                 >
                   Edit Blog
                 </Button>
-                <Button onClick={() => setShowModal(true)}>Delete</Button>
+                <Button
+                  className="btn btn-outline btn-sm text-error border-error hover:bg-error hover:text-white"
+                  onClick={() => setShowModal(true)}
+                >
+                  Delete
+                </Button>
               </>
             )}
           </div>
@@ -119,8 +137,18 @@ const BlogsItem = ({ id, title, description, blogMedia, user, userBlog }) => {
             onCancel={() => setShowModal(false)}
             footer={
               <>
-                <Button onClick={() => mutate(id)}>Yes</Button>
-                <Button onClick={() => setShowModal(false)}>Cancel</Button>
+                <Button
+                  className="btn btn-outline btn-sm text-error border-error hover:bg-error hover:text-white"
+                  onClick={() => mutate(id)}
+                >
+                  Yes, Delete
+                </Button>
+                <Button
+                  className="btn-sm btn-outline"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </Button>
               </>
             }
           >

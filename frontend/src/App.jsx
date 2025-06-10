@@ -15,8 +15,11 @@ import ProtectedRoute from "./routes/ProtectedRoutes";
 import ErrorElement from "./routes/ErrorElement";
 import BlogDetails from "./blogs/BlogPage";
 import BlogsForms from "./blogs/BlogsForms";
+import { useSelector } from "react-redux";
 
 const App = () => {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -29,7 +32,11 @@ const App = () => {
         },
         {
           index: true,
-          element: <Auth />,
+          element: isAuthenticated ? (
+            <Navigate to="/blogs" replace />
+          ) : (
+            <Auth />
+          ),
         },
         {
           path: "blogs",

@@ -35,8 +35,6 @@ async function summarizeContent(content) {
       }
     );
 
-    console.log("AI key", process.env.AI_KEY);
-
     const summary = response.data[0]?.summary_text;
 
     if (!summary) {

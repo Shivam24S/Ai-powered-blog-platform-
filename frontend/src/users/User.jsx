@@ -1,15 +1,56 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import { useNavigate } from "react-router-dom";
 import Button from "../shared/formElements/Button";
 import { authActions } from "../store/features/authSlicer";
 import Modal from "../shared/components/Modal";
+import { useMutation } from "@tanstack/react-query";
+import { httpRequest, queryClient } from "../../utils/http";
+import ErrorModal from "../shared/components/ErrorModal";
 
 const User = () => {
   const [showModal, setShowModal] = useState(false);
 
+  const [errorState, setErrorState] = useState(null);
+
+  const navigate = useNavigate();
+
   const user = useSelector((state) => state.auth.currentUser);
+
+  const token = useSelector((state) => state.auth.token);
+
+  console.log("TOKEN", token);
+
   const dispatch = useDispatch();
+
+  const { mutate, isError } = useMutation({
+    mutationFn: () =>
+      httpRequest({
+        url: `/user/`,
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    onSuccess: () => {
+      dispatch(authActions.logout());
+      setShowModal(false);
+      queryClient.invalidateQueries(["users"]);
+      navigate("/");
+    },
+    onError: (err) => {
+      setErrorState(
+        err?.response?.data?.message || "Failed to generate summary"
+      );
+    },
+  });
+
+  if (isError || errorState) {
+    return (
+      <ErrorModal
+        message={errorState || "Something went wrong generating summary."}
+        onClear={() => setErrorState(null)}
+      />
+    );
+  }
 
   if (!user) {
     return (
@@ -46,14 +87,15 @@ const User = () => {
 
             <Button
               onClick={() => dispatch(authActions.logout())}
-              className="btn btn-outline btn-error w-full"
+              className="btn-sm btn-outline btn-secondary w-full"
             >
               Log out
             </Button>
 
             <Button
               onClick={() => setShowModal(true)}
-              className="btn btn-outline btn-error w-full"
+              // className="btn btn-outline btn-error w-full"
+              className="btn btn-outline btn-sm text-error border-error hover:bg-error hover:text-white w-full"
             >
               Delete Profile
             </Button>
@@ -64,15 +106,22 @@ const User = () => {
             header={"Are you sure?"}
             footer={
               <>
-                <Button>Yes, Delete</Button>
-                <Button onClick={() => setShowModal(false)}>Cancel</Button>
+                <Button
+                  className="btn btn-outline btn-sm text-error border-error hover:bg-error hover:text-white"
+                  onClick={() => mutate(user.id)}
+                >
+                  Yes, Delete
+                </Button>
+                <Button
+                  className="btn-sm btn-outline"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </Button>
               </>
             }
           >
-            <p>
-              Do you really want to delete your profile ? , Blog data will be
-              also deleted
-            </p>
+            <p>Do you really want to delete your profile ?</p>
           </Modal>
         </div>
       </div>
