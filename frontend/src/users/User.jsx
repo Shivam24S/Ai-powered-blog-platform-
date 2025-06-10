@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Button from "../shared/formElements/Button";
 import { authActions } from "../store/features/authSlicer";
+import Modal from "../shared/components/Modal";
 
 const User = () => {
+  const [showModal, setShowModal] = useState(false);
+
   const user = useSelector((state) => state.auth.currentUser);
   const dispatch = useDispatch();
 
@@ -47,7 +50,30 @@ const User = () => {
             >
               Log out
             </Button>
+
+            <Button
+              onClick={() => setShowModal(true)}
+              className="btn btn-outline btn-error w-full"
+            >
+              Delete Profile
+            </Button>
           </div>
+          <Modal
+            show={showModal}
+            onCancel={() => setShowModal(false)}
+            header={"Are you sure?"}
+            footer={
+              <>
+                <Button>Yes, Delete</Button>
+                <Button onClick={() => setShowModal(false)}>Cancel</Button>
+              </>
+            }
+          >
+            <p>
+              Do you really want to delete your profile ? , Blog data will be
+              also deleted
+            </p>
+          </Modal>
         </div>
       </div>
     </div>

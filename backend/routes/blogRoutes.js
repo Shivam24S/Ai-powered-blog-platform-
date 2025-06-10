@@ -37,6 +37,6 @@ router.delete("/:id", auth, blogController.deleteBlog);
 
 router.get("/:id", blogController.getBlog);
 
-router.post("/:id/summarize", blogController.summarizeBlog);
+router.post("/summarize/:id", blogController.summarizeBlog);
 
 export default router;
