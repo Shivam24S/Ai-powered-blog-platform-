@@ -34,7 +34,7 @@ router.patch(
   userController.updateUser
 );
 
-router.delete("/", auth, userController.deleteUser);
+router.delete("/deleteProfile", auth, userController.deleteUser);
 
 router.delete("/users", auth, userController.deleteAllUser);
 

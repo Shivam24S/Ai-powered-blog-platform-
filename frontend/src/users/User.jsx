@@ -26,7 +26,7 @@ const User = () => {
   const { mutate, isError } = useMutation({
     mutationFn: () =>
       httpRequest({
-        url: `/user/`,
+        url: `/user/deleteProfile`,
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       }),

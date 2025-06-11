@@ -85,6 +85,9 @@ const UserForm = ({ isEditMode = false }) => {
             mutate(formData, {
               onError: () => resetForm(),
               onSettled: () => setSubmitting(false),
+              onSuccess: () => {
+                navigate("/blogs");
+              },
             });
           }}
         >

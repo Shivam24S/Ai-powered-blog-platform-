@@ -14,7 +14,7 @@ export async function welcomeEmail(email, name) {
       email,
       name,
       template,
-      "🎉 Welcome to AI-powered Blog Platform!"
+      "🎉 Welcome to QuickReads.AI an AI-powered Blog Platform!"
     );
 
     if (emailResponse?.messageId) {

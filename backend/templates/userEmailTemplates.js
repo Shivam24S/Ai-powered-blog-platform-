@@ -8,7 +8,7 @@ export const welcomeEmailTemplate = (name) => {
           <p style="font-size: 15px; color: #444;">Our AI-powered blog platform allows you to read, create, and summarize blog content with the help of smart AI tools.</p>
 
           <div style="text-align: center; margin: 30px 0;">
-            <a href="" style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Explore Now</a>
+            <a href="https://quickreadsai.netlify.app/blogs" style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Explore Now</a>
           </div>
 
           <p style="font-size: 14px; color: #666;">If you have any questions or feedback, just reply to this email. We're here to help!</p>

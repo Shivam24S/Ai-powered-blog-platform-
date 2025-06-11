@@ -127,11 +127,16 @@ const deleteUser = async (req, res, next) => {
   try {
     const requestedUser = req.user;
 
-    const deleteUser = await User.findByIdAndDelete(requestedUser._id);
+    const deleteUser = await User.findById(requestedUser._id).populate("Blogs");
 
     if (!deleteUser) {
       return next(new HttpError("failed to delete user", 400));
     }
+
+    // deleting parallel
+    await Promise.all(deleteUser.Blogs.map((blog) => blog.deleteOne()));
+
+    await deleteUser.deleteOne();
 
     res.status(200).json({ message: "user deleted successfully" });
 
