@@ -139,6 +139,8 @@ dist
 
 # env
 
+.env
+*.env
 .dev.env
 .env
 ./backend/.dev.env
